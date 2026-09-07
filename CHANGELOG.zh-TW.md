@@ -13,6 +13,10 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 - 互動式 `auth login` 收到的網址在 `taiga.io` 底下卻不是網頁應用（最常見的是社群論壇）時，會提議改用 `https://tree.taiga.io/`，回答 yes 就接續登入。在回答之前不會接觸你輸入以外的任何站台；script 仍然會拿到錯誤，因為不該有任何東西替它決定目的地。
 - `auth login --with-token` 除了單一 token，也接受網頁應用持有的 JSON 物件 `{"auth_token": …, "refresh": …}`。帶著 refresh token 的匯入登入能像密碼登入一樣自動更新，不再於 access token 過期時失效；精靈與 README 提供一次複製兩者的 console 指令。結果會標示是否存入了 refresh token。
 
+### 變更
+
+- 在終端機執行 `auth login` 時，即使 profile 已經存過網址，現在仍會先問要登入哪一個 Taiga，並以存好的網址作為預設值，按 Enter 就沿用，而且不會接觸任何站台。登入正是有人要換到另一個 Taiga 的時機，在此之前存好的網址會被無聲沿用，只有知道 `--url` 的人改得動。這次執行以 `--api-url` 或環境變數指名的 API 網址仍然照用不問；script 沒有對象可問，會沿用存好的網址。
+
 ## [0.4.0] - 2026-09-03
 
 這一版全部關於第一次登入。`aihki auth login` 現在會問你的 Taiga 裡任何一頁的網址（預設為官方託管的 Taiga），再問帳號怎麼登入；用 GitHub 或 Google 的帳號會被帶去貼 token，而不是被要求一個它沒有的密碼。`--url` 取代 `--host`（舊旗標仍可用），在終端機貼上 token 後按 Enter 即可，不再需要 Ctrl-D。

@@ -200,3 +200,100 @@ func TestReadChoiceTakesANumberOrTheFirstOnEnter(t *testing.T) {
 		}
 	}
 }
+
+// terminalApp is an app whose input answers as a terminal would, so that the
+// questions a login asks can be tested against a buffer.
+func terminalApp(t *testing.T, server *httptest.Server, input string) (*App, *bytes.Buffer) {
+	t.Helper()
+	app, _, stderr, _ := testApp(t, server)
+	app.In = strings.NewReader(input)
+	app.StdinTTY = func() bool { return true }
+	return app, stderr
+}
+
+// A profile that has logged in before saved a URL, but the login is also the
+// moment someone points the CLI at another Taiga, so the saved URL is offered
+// as the default rather than used without a word. Enter keeps it, and keeping
+// it contacts nothing: it is already the API's address.
+func TestLoginOffersTheSavedURLAndKeepsItOnEnter(t *testing.T) {
+	const saved = "https://saved.invalid/api/v1/"
+	app, prompts := terminalApp(t, nil, "\n")
+	target, err := app.loginTarget(context.Background(), "", Settings{APIURL: saved})
+	if err != nil {
+		t.Fatalf("loginTarget: %v (prompts=%q)", err, prompts.String())
+	}
+	if target.apiURL != saved {
+		t.Errorf("apiURL = %q, want the saved %q", target.apiURL, saved)
+	}
+	if !strings.Contains(prompts.String(), "["+saved+"]") {
+		t.Errorf("prompt = %q, want the saved URL offered as the default", prompts.String())
+	}
+}
+
+// Answering with another URL moves the login to that Taiga, which is the whole
+// point of asking.
+func TestLoginDiscoversTheURLTypedOverTheSavedOne(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/conf.json":
+			_, _ = io.WriteString(w, `{"api":"http://`+r.Host+`/api/v1/","baseHref":"/"}`)
+		case "/api/v1/locales":
+			_, _ = io.WriteString(w, `[{"code":"en","name":"English"}]`)
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer server.Close()
+	app, prompts := terminalApp(t, server, server.URL+"/\n")
+	target, err := app.loginTarget(context.Background(), "", Settings{APIURL: "https://saved.invalid/api/v1/"})
+	if err != nil {
+		t.Fatalf("loginTarget: %v (prompts=%q)", err, prompts.String())
+	}
+	if target.apiURL != server.URL+"/api/v1/" {
+		t.Errorf("apiURL = %q, want the API behind the typed URL", target.apiURL)
+	}
+}
+
+// A URL this invocation named itself is a decision rather than a default, so
+// --api-url and the environment are obeyed without a question.
+func TestLoginDoesNotAskWhenTheAPIURLWasGiven(t *testing.T) {
+	const given = "https://given.invalid/api/v1/"
+	for name, prepare := range map[string]func(*App){
+		"--api-url": func(app *App) { app.global.APIURL = given },
+		"AIHKI_API_URL": func(app *App) {
+			app.Getenv = func(name string) string { return map[string]string{"AIHKI_API_URL": given}[name] }
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			app, prompts := terminalApp(t, nil, "https://typed.invalid/\n")
+			prepare(app)
+			target, err := app.loginTarget(context.Background(), "", Settings{APIURL: given})
+			if err != nil {
+				t.Fatalf("loginTarget: %v", err)
+			}
+			if target.apiURL != given {
+				t.Errorf("apiURL = %q, want the given %q", target.apiURL, given)
+			}
+			if prompts.String() != "" {
+				t.Errorf("prompt = %q, want nothing asked", prompts.String())
+			}
+		})
+	}
+}
+
+// A script has nobody to ask, so the URL its profile saved is kept as it was
+// before there was a question at all.
+func TestLoginKeepsTheSavedURLOffATerminal(t *testing.T) {
+	const saved = "https://saved.invalid/api/v1/"
+	app, _, prompts, _ := testApp(t, nil)
+	target, err := app.loginTarget(context.Background(), "", Settings{APIURL: saved})
+	if err != nil {
+		t.Fatalf("loginTarget: %v", err)
+	}
+	if target.apiURL != saved {
+		t.Errorf("apiURL = %q, want the saved %q", target.apiURL, saved)
+	}
+	if prompts.String() != "" {
+		t.Errorf("prompt = %q, want nothing asked", prompts.String())
+	}
+}

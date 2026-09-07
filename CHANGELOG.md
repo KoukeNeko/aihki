@@ -13,6 +13,10 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 - When the address given to an interactive `auth login` is under `taiga.io` but is not the web app, such as the community forum, the login offers `https://tree.taiga.io/` and continues there on a yes. Nothing is contacted beyond the typed site until the person has answered, and a script still gets the error, because nothing may choose a destination for it.
 - `auth login --with-token` accepts the JSON object the web app holds, `{"auth_token": …, "refresh": …}`, as well as a bare token. With the refresh token an imported login renews itself the way a password login does, instead of ending when the access token expires; the wizard and the README give the console one-liner that copies both. The result says whether a refresh token was stored.
 
+### Changed
+
+- `auth login` at a terminal now asks which Taiga to log in to even when the profile already saved one, offering the saved URL as the default so that Enter keeps it and contacts nothing. Logging in is when someone moves to another Taiga, and until now the saved URL was used without a word and could only be changed by knowing `--url`. An API URL this invocation names through `--api-url` or the environment is still obeyed without a question, and a script keeps the saved URL, having nobody to ask.
+
 ## [0.4.0] - 2026-09-03
 
 The first login is the whole of this release. `aihki auth login` now asks for the URL of any page inside your Taiga, with the hosted Taiga as the default, and then how your account signs in, so that an account backed by GitHub or Google is walked to its token instead of a password it does not have. `--url` replaces `--host`, which still works, and a token pasted at a terminal takes Enter rather than Ctrl-D.

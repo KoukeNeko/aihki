@@ -33,6 +33,10 @@ type App struct {
 	CompletionCache *completioncache.Store
 	Getenv          func(string) string
 	Cwd             string
+	// StdinTTY reports whether input is a terminal, which is what decides
+	// whether a question may be asked at all. It is left unset outside tests,
+	// where input is a buffer that could never answer one.
+	StdinTTY func() bool
 
 	global globalOptions
 }

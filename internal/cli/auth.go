@@ -114,28 +114,50 @@ func (a *App) login(ctx context.Context, options loginOptions) error {
 	return nil
 }
 
-// loginTarget resolves where the login goes. A URL on the command line is
-// discovered from; a configured API URL is reused; otherwise the terminal is
-// asked, and a script is told what to pass.
+// loginTarget resolves where the login goes: which URL it is aimed at, and
+// which API answers behind it.
 func (a *App) loginTarget(ctx context.Context, siteURL string, settings Settings) (loginTarget, error) {
-	if siteURL == "" && settings.APIURL != "" {
-		return loginTarget{apiURL: settings.APIURL}, nil
+	siteURL, err := a.loginSiteURL(siteURL, settings)
+	if err != nil {
+		return loginTarget{}, err
 	}
-	if siteURL == "" {
-		if a.global.NoInput || !a.stdinTTY() {
-			return loginTarget{}, validationError("missing_api_url", "a Taiga URL is required in non-interactive mode; pass --url with any page inside the Taiga web app, or --api-url")
-		}
-		var err error
-		siteURL, err = a.askSite()
-		if err != nil {
-			return loginTarget{}, err
-		}
+	// The profile's own API URL was discovered from by the login that saved
+	// it, so keeping it contacts nothing.
+	if siteURL == settings.APIURL {
+		return loginTarget{apiURL: settings.APIURL}, nil
 	}
 	front, err := a.discoverOrOfferHosted(ctx, siteURL)
 	if err != nil {
 		return loginTarget{}, err
 	}
 	return loginTarget{apiURL: front.API, site: front.Site}, nil
+}
+
+// loginSiteURL decides which Taiga this login is aimed at. A URL on the
+// command line is taken as it stands, and so is an API URL this invocation
+// named through --api-url or the environment. A URL the profile merely saved
+// is a default rather than a decision, because logging in is when someone
+// moves to another Taiga, so a terminal is asked and may answer with a
+// different one; a script keeps the saved URL, having nobody to ask.
+func (a *App) loginSiteURL(siteURL string, settings Settings) (string, error) {
+	if siteURL != "" || a.apiURLGiven() {
+		return firstNonEmpty(siteURL, settings.APIURL), nil
+	}
+	if a.global.NoInput || !a.stdinTTY() {
+		if settings.APIURL != "" {
+			return settings.APIURL, nil
+		}
+		return "", validationError("missing_api_url", "a Taiga URL is required in non-interactive mode; pass --url with any page inside the Taiga web app, or --api-url")
+	}
+	return a.askSite(settings.APIURL)
+}
+
+// apiURLGiven reports whether this invocation named the API URL itself. The
+// resolved settings fold the flag, the environment and the profile into one
+// field, and only the first two are an instruction to go there without being
+// asked about it.
+func (a *App) apiURLGiven() bool {
+	return a.global.APIURL != "" || a.env("API_URL") != ""
 }
 
 // discoverOrOfferHosted finds the Taiga behind siteURL. When the site is under
@@ -172,10 +194,12 @@ func isWrongSite(err error) bool {
 }
 
 // askSite asks for the Taiga site as one question, the same for every site.
-// The hosted Taiga is the default, so that its users press Enter and never
-// have to know a URL, and the default is also the example of what to paste.
-func (a *App) askSite() (string, error) {
-	return a.readLineOr("Taiga URL (paste any page from inside the Taiga web app)", taiga.HostedTaigaApp)
+// The default is the URL this profile last logged in to, so that logging in
+// again is one Enter, and the hosted Taiga when there is none, so that its
+// users never have to know a URL. Either way the default doubles as the
+// example of what to paste.
+func (a *App) askSite(savedAPIURL string) (string, error) {
+	return a.readLineOr("Taiga URL (paste any page from inside the Taiga web app)", firstNonEmpty(savedAPIURL, taiga.HostedTaigaApp))
 }
 
 // authenticate obtains a credential for target. Piped token input stays
@@ -369,6 +393,9 @@ func (a *App) authStatusCommand() *cobra.Command {
 }
 
 func (a *App) stdinTTY() bool {
+	if a.StdinTTY != nil {
+		return a.StdinTTY()
+	}
 	file, ok := a.In.(*os.File)
 	// x/term takes an int, and a descriptor is small and non-negative.
 	return ok && term.IsTerminal(int(file.Fd())) // #nosec G115
