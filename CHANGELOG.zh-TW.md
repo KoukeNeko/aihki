@@ -8,6 +8,10 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+## [0.5.0-rc.2] - 2026-09-07
+
+這個候選版的主題是「呼叫端不必開口就能知道的事」。`aihki schema` 現在會描述列表項目與單筆回應裡的欄位，由指令實際輸出的型別推導，並標示哪些是可選的，於是「某一列沒有這個欄位」不會被讀成「這個指令沒有這個欄位」。表格若只裝得下整份清單的一頁，會直說。參數錯誤會附上該指令的 usage，`--fields` 說明傳一個不存在的名稱就會列出可用欄位，根層說明則指引無人值守的呼叫端去看 `schema`。
+
 ### 新增
 
 - `aihki schema` 現在會描述列表裡裝的是什麼，以及單筆回應裡有什麼，而不只是說「這是一個列表」。每個列表指令的 `output_schema` 都帶著單一項目的形狀——編碼後的欄位名、型別，以及哪些欄位一定會被寫出——由該指令實際輸出的型別推導而來，因此不會與真正送出的內容脫節。其中「可選」的資訊最關鍵：`story history` 會聲明 `comment` 是一個可能缺席的欄位，而這正是「這一列沒有留言」與「這個指令沒有這個欄位」的差別，只讀一列是分不出來的。`tag list` 與 `integration providers` 的每一列是就地組出來的，沒有型別可依據，因此仍然只描述外層信封。 同樣的形狀現在也涵蓋回應單一項目的指令：`story view`、`project view`、`stats project`、所有 `watch` 與 `vote`，以及其他三十幾個，都帶著它們送出的欄位。至於把回應就地組成 map 的指令仍然只描述外層信封，因為沒有型別可以據以推導。
@@ -213,7 +217,8 @@ brew install koukeneko/tap/aihki
 
 已針對 Taiga 6.10.2 以固定 image digest 執行完整 Docker E2E 驗證。支援 macOS、Linux、Windows 的 `amd64` 與 `arm64`。
 
-[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.0-rc.1...HEAD
+[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.0-rc.2...HEAD
+[0.5.0-rc.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.2
 [0.5.0-rc.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.1
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
 [0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2

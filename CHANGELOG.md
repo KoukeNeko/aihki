@@ -8,6 +8,10 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+## [0.5.0-rc.2] - 2026-09-07
+
+What a caller can find out without asking is what this candidate changes. `aihki schema` now describes the fields inside a list and inside a single answer, derived from the types the commands emit, with the optional ones marked so that a field missing from one row is not read as a field that does not exist. A table that holds one page of a longer list says so. An argument error carries the command's usage line, `--fields` says that an unknown name lists the available ones, and the root help points an unattended caller at `schema`.
+
 ### Added
 
 - `aihki schema` now describes what is in a list, and what a single answer holds, not only that there is one. Every list command's `output_schema` carries the shape of one item — the encoded field names, their types, and which of them are always written — derived from the type the command emits, so it cannot drift from what is actually sent. The optional ones matter most: `story history` declares `comment` as a field that may be absent, which is the difference between a row that carries no comment and a command that has no such field, and reading one row cannot tell those apart. `tag list` and `integration providers` build their rows on the spot and so still describe only the envelope. The same shape now reaches the commands that answer with one thing rather than a page of them: `story view`, `project view`, `stats project`, every `watch` and `vote`, and thirty-odd others carry the fields of what they send. The commands that build their answer as a map on the spot still describe only the envelope, since there is no type to read them from.
@@ -213,7 +217,8 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.0-rc.1...HEAD
+[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.0-rc.2...HEAD
+[0.5.0-rc.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.2
 [0.5.0-rc.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.1
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
 [0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2
