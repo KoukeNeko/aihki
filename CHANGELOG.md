@@ -8,35 +8,24 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
-## [0.5.0-rc.2] - 2026-09-07
+## [0.5.0] - 2026-09-07
 
-What a caller can find out without asking is what this candidate changes. `aihki schema` now describes the fields inside a list and inside a single answer, derived from the types the commands emit, with the optional ones marked so that a field missing from one row is not read as a field that does not exist. A table that holds one page of a longer list says so. An argument error carries the command's usage line, `--fields` says that an unknown name lists the available ones, and the root help points an unattended caller at `schema`.
+Two things a caller could not find out without asking, answered. `aihki auth login` now asks which Taiga to log in to even when the profile already saved one, so moving to another Taiga no longer means knowing `--url`. And `aihki schema` describes the fields inside a list and inside a single answer, derived from the types the commands emit, with the optional ones marked so that a field missing from one row is not read as a field that does not exist. Around those: a table that holds one page of a longer list says so, argument errors carry the command's usage, and the root help points an unattended caller at `schema`.
 
 ### Added
 
 - `aihki schema` now describes what is in a list, and what a single answer holds, not only that there is one. Every list command's `output_schema` carries the shape of one item — the encoded field names, their types, and which of them are always written — derived from the type the command emits, so it cannot drift from what is actually sent. The optional ones matter most: `story history` declares `comment` as a field that may be absent, which is the difference between a row that carries no comment and a command that has no such field, and reading one row cannot tell those apart. `tag list` and `integration providers` build their rows on the spot and so still describe only the envelope. The same shape now reaches the commands that answer with one thing rather than a page of them: `story view`, `project view`, `stats project`, every `watch` and `vote`, and thirty-odd others carry the fields of what they send. The commands that build their answer as a map on the spot still describe only the envelope, since there is no type to read them from.
-
-### Changed
-
-- The CLI now says what it expects rather than leaving it to be looked up. An argument error carries the command's usage line, so `custom-field list` names `<epic|story|task|issue>` instead of only counting what was missing; `--fields` says that an unknown name lists the available ones, which is the one complete source, since a field the sampled row left out still appears there; and the root help points an unattended caller at `aihki schema <command>` for a command's schemas, safety and idempotency. Each of these was a wrong turn taken while driving the CLI, and each is now answered where the wrong turn happens rather than in the README.
-
-### Fixed
-
-- A table that holds only one page of a longer list now says so, as `showing 30 of 54; use --limit to see more` on stderr. Until now a table that stopped at the page size looked exactly like a list that ended there, so `story history`, `story list` and every other paginated table quietly invited conclusions drawn from a fraction of the data. The notice stays off stdout so the table is still pipeable, says nothing when the page holds the whole list, and is silent under `--quiet`; JSON output is unchanged, having carried `page` all along.
-
-## [0.5.0-rc.1] - 2026-09-07
-
-Logging in is where this release goes. `aihki auth login` now asks which Taiga to log in to even when the profile already saved one, so moving to another Taiga no longer means knowing `--url`, and Enter keeps the saved URL without contacting anything. A URL under `taiga.io` that is not the web app, such as the community forum, is now offered the hosted app instead of only being refused.
-
-### Added
-
 - When the address given to an interactive `auth login` is under `taiga.io` but is not the web app, such as the community forum, the login offers `https://tree.taiga.io/` and continues there on a yes. Nothing is contacted beyond the typed site until the person has answered, and a script still gets the error, because nothing may choose a destination for it.
 - `auth login --with-token` accepts the JSON object the web app holds, `{"auth_token": …, "refresh": …}`, as well as a bare token. With the refresh token an imported login renews itself the way a password login does, instead of ending when the access token expires; the wizard and the README give the console one-liner that copies both. The result says whether a refresh token was stored.
 
 ### Changed
 
+- The CLI now says what it expects rather than leaving it to be looked up. An argument error carries the command's usage line, so `custom-field list` names `<epic|story|task|issue>` instead of only counting what was missing; `--fields` says that an unknown name lists the available ones, which is the one complete source, since a field the sampled row left out still appears there; and the root help points an unattended caller at `aihki schema <command>` for a command's schemas, safety and idempotency. Each of these was a wrong turn taken while driving the CLI, and each is now answered where the wrong turn happens rather than in the README.
 - `auth login` at a terminal now asks which Taiga to log in to even when the profile already saved one, offering the saved URL as the default so that Enter keeps it and contacts nothing. Logging in is when someone moves to another Taiga, and until now the saved URL was used without a word and could only be changed by knowing `--url`. An API URL this invocation names through `--api-url` or the environment is still obeyed without a question, and a script keeps the saved URL, having nobody to ask.
 
+### Fixed
+
+- A table that holds only one page of a longer list now says so, as `showing 30 of 54; use --limit to see more` on stderr. Until now a table that stopped at the page size looked exactly like a list that ended there, so `story history`, `story list` and every other paginated table quietly invited conclusions drawn from a fraction of the data. The notice stays off stdout so the table is still pipeable, says nothing when the page holds the whole list, and is silent under `--quiet`; JSON output is unchanged, having carried `page` all along.
 ## [0.4.0] - 2026-09-03
 
 The first login is the whole of this release. `aihki auth login` now asks for the URL of any page inside your Taiga, with the hosted Taiga as the default, and then how your account signs in, so that an account backed by GitHub or Google is walked to its token instead of a password it does not have. `--url` replaces `--host`, which still works, and a token pasted at a terminal takes Enter rather than Ctrl-D.
@@ -217,9 +206,8 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.0-rc.2...HEAD
-[0.5.0-rc.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.2
-[0.5.0-rc.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.1
+[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
 [0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2
 [0.3.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.1
