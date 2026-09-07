@@ -86,7 +86,7 @@ func (a *App) epicListCommand() *cobra.Command {
 		for _, epic := range views {
 			_, _ = fmt.Fprintf(writer, "#%d\t%s\t%s\t%s\t%d\n", epic.Ref, epic.Subject, epic.Status, epic.Assignee, epic.Version)
 		}
-		return writer.Flush()
+		return a.flushTable(writer, len(views), pagination.Total)
 	}}
 	command.Flags().IntVar(&page, "page", 1, "page number")
 	command.Flags().IntVar(&limit, "limit", 30, "maximum epics to return")

@@ -106,7 +106,7 @@ func (a *App) sprintListCommand() *cobra.Command {
 			for _, sprint := range views {
 				_, _ = fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%t\n", sprint.Slug, sprint.Name, sprint.Start, sprint.Finish, sprint.Closed)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().StringVar(&state, "state", "open", "open, closed, or all")

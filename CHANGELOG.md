@@ -8,6 +8,10 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+### Fixed
+
+- A table that holds only one page of a longer list now says so, as `showing 30 of 54; use --limit to see more` on stderr. Until now a table that stopped at the page size looked exactly like a list that ended there, so `story history`, `story list` and every other paginated table quietly invited conclusions drawn from a fraction of the data. The notice stays off stdout so the table is still pipeable, says nothing when the page holds the whole list, and is silent under `--quiet`; JSON output is unchanged, having carried `page` all along.
+
 ## [0.5.0-rc.1] - 2026-09-07
 
 Logging in is where this release goes. `aihki auth login` now asks which Taiga to log in to even when the profile already saved one, so moving to another Taiga no longer means knowing `--url`, and Enter keeps the saved URL without contacting anything. A URL under `taiga.io` that is not the web app, such as the community forum, is now offered the hosted app instead of only being refused.

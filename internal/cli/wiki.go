@@ -71,7 +71,7 @@ func (a *App) wikiListCommand() *cobra.Command {
 			for _, item := range views {
 				_, _ = fmt.Fprintf(writer, "%s\t%d\t%d\t%s\n", item.Slug, item.Editions, item.Version, item.ModifiedDate)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().IntVar(&page, "page", 1, "page number")

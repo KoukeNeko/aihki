@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/KoukeNeko/aihki/internal/completioncache"
 	"github.com/KoukeNeko/aihki/internal/config"
@@ -98,6 +99,24 @@ func (a *App) Execute(ctx context.Context, args []string) int {
 	renderer := a.renderer()
 	_ = renderer.Failure(body)
 	return known.ExitCode
+}
+
+// flushTable writes a table out and, when the page it holds is only part of
+// the list, says so. A table that stops at the page size looks exactly like a
+// list that ends there, and a reader who cannot tell the two apart draws
+// conclusions from a fraction of the data. The notice goes to stderr so that
+// the table itself stays pipeable, and every command that paginates has
+// --limit, which is why that is the flag named. JSON output says none of this
+// because it already carries the page.
+func (a *App) flushTable(writer *tabwriter.Writer, shown, total int) error {
+	if err := writer.Flush(); err != nil {
+		return err
+	}
+	if a.global.Quiet || total <= shown {
+		return nil
+	}
+	_, _ = fmt.Fprintf(a.Err, "showing %d of %d; use --limit to see more\n", shown, total)
+	return nil
 }
 
 func (a *App) renderer() output.Renderer {

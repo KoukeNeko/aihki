@@ -59,7 +59,7 @@ func (a *App) searchCommand() *cobra.Command {
 				}
 				_, _ = fmt.Fprintf(writer, "%s\t%s\t%s\t%s\n", item.Kind, identifier, item.Subject, item.Sprint)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(items), response.Count)
 		},
 	}
 	command.Flags().StringVar(&kind, "type", "all", "all, epic, story, task, issue, or wiki")

@@ -76,7 +76,7 @@ func (a *App) participantCommand(resource, kind string) *cobra.Command {
 			for _, participant := range participants {
 				_, _ = fmt.Fprintf(writer, "%d\t%s\t%s\n", participant.ID, participant.Username, participant.FullName)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(participants), pagination.Total)
 		},
 	}
 	command.Flags().IntVar(&page, "page", 1, "page number")

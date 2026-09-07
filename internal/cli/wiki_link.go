@@ -40,7 +40,7 @@ func (a *App) wikiLinkListCommand() *cobra.Command {
 		for _, link := range links {
 			_, _ = fmt.Fprintf(writer, "%d\t%s\t%s\t%d\n", link.ID, link.Href, link.Title, link.Order)
 		}
-		return writer.Flush()
+		return a.flushTable(writer, len(links), pagination.Total)
 	}}
 	command.Flags().IntVar(&page, "page", 1, "page number")
 	command.Flags().IntVar(&limit, "limit", 30, "maximum Wiki links to return")

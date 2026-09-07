@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"text/tabwriter"
 	"time"
 
 	"github.com/KoukeNeko/aihki/internal/completioncache"
@@ -729,5 +730,67 @@ func TestEnvironmentFallsBackToTheLegacyPrefix(t *testing.T) {
 
 	if got := app.env("PROJECT"); got != "" {
 		t.Fatalf("env(PROJECT) = %q, want empty", got)
+	}
+}
+
+// A table that stops at the page size looks exactly like a list that ends
+// there, so a page holding only part of the list has to say so. The notice
+// goes to stderr, leaving the table itself pipeable.
+func TestFlushTableSaysWhenThePageIsPartial(t *testing.T) {
+	for name, tc := range map[string]struct {
+		shown, total int
+		quiet        bool
+		wantNote     string
+	}{
+		"partial":        {shown: 30, total: 54, wantNote: "showing 30 of 54; use --limit to see more\n"},
+		"whole list":     {shown: 16, total: 16, wantNote: ""},
+		"total unknown":  {shown: 12, total: 0, wantNote: ""},
+		"quiet is quiet": {shown: 30, total: 54, quiet: true, wantNote: ""},
+	} {
+		t.Run(name, func(t *testing.T) {
+			out, stderr := &bytes.Buffer{}, &bytes.Buffer{}
+			app := &App{Out: out, Err: stderr}
+			app.global.Quiet = tc.quiet
+			writer := tabwriter.NewWriter(app.Out, 0, 4, 2, ' ', 0)
+			_, _ = fmt.Fprintln(writer, "REF\tSUBJECT")
+			if err := app.flushTable(writer, tc.shown, tc.total); err != nil {
+				t.Fatal(err)
+			}
+			if stderr.String() != tc.wantNote {
+				t.Errorf("stderr = %q, want %q", stderr.String(), tc.wantNote)
+			}
+			if !strings.Contains(out.String(), "REF") {
+				t.Errorf("stdout = %q, want the table flushed to it", out.String())
+			}
+		})
+	}
+}
+
+// The notice reports what the server said the list holds, not what the page
+// happens to carry, which is the whole point of showing it.
+func TestListCommandReportsTheServerTotal(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/api/v1/projects/by_slug":
+			_, _ = io.WriteString(w, `{"id":1,"name":"Demo","slug":"demo"}`)
+		case "/api/v1/userstories":
+			w.Header().Set("X-Pagination-Current", "1")
+			w.Header().Set("X-Paginated-By", "2")
+			w.Header().Set("X-Pagination-Count", "54")
+			_, _ = io.WriteString(w, `[{"id":1,"ref":76,"subject":"one","version":1},{"id":2,"ref":77,"subject":"two","version":1}]`)
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer server.Close()
+	app, out, stderr, _ := testApp(t, server)
+	if code := app.Execute(context.Background(), []string{"story", "list", "--project", "demo"}); code != ExitSuccess {
+		t.Fatalf("exit=%d stderr=%s", code, stderr.String())
+	}
+	if !strings.Contains(stderr.String(), "showing 2 of 54") {
+		t.Errorf("stderr = %q, want the server's total", stderr.String())
+	}
+	if strings.Contains(out.String(), "showing") {
+		t.Errorf("stdout = %q, want the notice kept off it", out.String())
 	}
 }

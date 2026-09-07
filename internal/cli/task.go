@@ -93,7 +93,7 @@ func (a *App) taskListCommand() *cobra.Command {
 			for _, task := range views {
 				_, _ = fmt.Fprintf(writer, "#%d\t%s\t%s\t#%d\t%s\t%d\n", task.Ref, task.Subject, task.Status, task.StoryRef, task.Assignee, task.Version)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().StringVar(&story, "story", "", "filter by parent Story ref")

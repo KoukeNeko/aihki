@@ -100,7 +100,7 @@ func (a *App) storyListCommand() *cobra.Command {
 				}
 				_, _ = fmt.Fprintf(writer, "#%d\t%s\t%s\t%s\t%s\t%d\n", story.Ref, story.Subject, story.Status, story.Sprint, points, story.Version)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().IntVar(&page, "page", 1, "page number")

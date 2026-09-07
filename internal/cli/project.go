@@ -270,7 +270,7 @@ func (a *App) projectListCommand() *cobra.Command {
 			for _, project := range projects {
 				_, _ = fmt.Fprintf(writer, "%s\t%s\t%t\t%t\n", project.Slug, project.Name, project.IsPrivate, project.IsArchived)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(projects), pagination.Total)
 		},
 	}
 	command.Flags().IntVar(&page, "page", 1, "page number")

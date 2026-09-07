@@ -85,7 +85,7 @@ func (a *App) issueListCommand() *cobra.Command {
 			for _, issue := range views {
 				_, _ = fmt.Fprintf(writer, "#%d\t%s\t%s\t%s\t%d\n", issue.Ref, issue.Subject, issue.Status, issue.Assignee, issue.Version)
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().IntVar(&page, "page", 1, "page number")

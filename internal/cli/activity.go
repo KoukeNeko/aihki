@@ -121,7 +121,7 @@ func (a *App) historyCommand(resource string) *cobra.Command {
 			for _, entry := range views {
 				_, _ = fmt.Fprintf(writer, "%s\t%s\t%s\t%s\n", entry.CreatedAt, entry.Kind, entry.Author, historySummary(entry))
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().StringVar(&historyType, "type", "all", "history type: all, activity, or comment")

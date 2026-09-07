@@ -8,6 +8,10 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+### 修正
+
+- 表格若只裝得下整份清單的其中一頁，現在會在 stderr 說明，格式為 `showing 30 of 54; use --limit to see more`。在此之前，表格在頁面大小處停住的樣子跟清單真的到此為止一模一樣，於是 `story history`、`story list` 以及其他所有分頁表格都在無聲地誘導你用一部分資料下結論。提示不會寫到 stdout，表格照樣可以接管線；整份都顯示得下時不會出現；`--quiet` 之下靜音。JSON 輸出不變，它本來就帶著 `page`。
+
 ## [0.5.0-rc.1] - 2026-09-07
 
 這一版都在登入這件事上。`aihki auth login` 現在即使 profile 已經存過網址，仍會先問要登入哪一個 Taiga，換到另一個 Taiga 不再需要知道 `--url`，按 Enter 沿用存好的網址而且不會接觸任何站台。`taiga.io` 底下卻不是網頁應用的網址（例如社群論壇）不再只是被拒絕，而是會提議改用託管版。

@@ -57,7 +57,7 @@ func (a *App) timelineCommand() *cobra.Command {
 			for _, event := range views {
 				_, _ = fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%s\t%s\n", event.Created, event.Action, event.Resource, timelineItem(event), event.User, timelineDetail(event))
 			}
-			return writer.Flush()
+			return a.flushTable(writer, len(views), pagination.Total)
 		},
 	}
 	command.Flags().BoolVar(&onlyRelevant, "only-relevant", true, "exclude low-signal changes and deletions")
