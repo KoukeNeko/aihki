@@ -8,6 +8,10 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+### Changed
+
+- The CLI now says what it expects rather than leaving it to be looked up. An argument error carries the command's usage line, so `custom-field list` names `<epic|story|task|issue>` instead of only counting what was missing; `--fields` says that an unknown name lists the available ones, which is the one complete source, since a field the sampled row left out still appears there; and the root help points an unattended caller at `aihki schema <command>` for a command's schemas, safety and idempotency. Each of these was a wrong turn taken while driving the CLI, and each is now answered where the wrong turn happens rather than in the README.
+
 ### Fixed
 
 - A table that holds only one page of a longer list now says so, as `showing 30 of 54; use --limit to see more` on stderr. Until now a table that stopped at the page size looked exactly like a list that ended there, so `story history`, `story list` and every other paginated table quietly invited conclusions drawn from a fraction of the data. The notice stays off stdout so the table is still pipeable, says nothing when the page holds the whole list, and is silent under `--quiet`; JSON output is unchanged, having carried `page` all along.

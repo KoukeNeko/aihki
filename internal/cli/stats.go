@@ -229,7 +229,7 @@ func makeMemberStatsViews(users []taiga.User, stats taiga.ProjectMemberStats) []
 func maximumArgs(maximum int) cobra.PositionalArgs {
 	return func(cmd *cobra.Command, args []string) error {
 		if len(args) > maximum {
-			return usageError(fmt.Sprintf("%s accepts at most %d argument(s), received %d", cmd.CommandPath(), maximum, len(args)))
+			return usageError(fmt.Sprintf("%s accepts at most %d argument(s), received %d%s", cmd.CommandPath(), maximum, len(args), argumentUsage(cmd)))
 		}
 		return nil
 	}

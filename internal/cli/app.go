@@ -125,8 +125,15 @@ func (a *App) renderer() output.Renderer {
 
 func (a *App) rootCommand() *cobra.Command {
 	root := &cobra.Command{
-		Use:           "aihki",
-		Short:         "Manage Taiga projects from the command line",
+		Use:   "aihki",
+		Short: "Manage Taiga projects from the command line",
+		// An unattended caller reads --help, not the README, and schema is one
+		// alphabetical entry among thirty-odd with nothing marking it as the
+		// one that describes the rest.
+		Long: "Manage Taiga projects from the command line.\n\n" +
+			"--json emits a versioned contract on stdout and a structured error on stderr, under fixed exit codes.\n" +
+			"`aihki schema <command>` prints that command's input and output JSON Schema with its safety and\n" +
+			"idempotency, which is what an unattended caller needs to decide whether it may run.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
@@ -147,7 +154,7 @@ func (a *App) rootCommand() *cobra.Command {
 	flags.StringVar(&a.global.APIURL, "api-url", "", "complete Taiga API base URL")
 	flags.StringVarP(&a.global.Project, "project", "p", "", "Taiga project slug")
 	flags.BoolVar(&a.global.JSON, "json", false, "emit the versioned JSON contract")
-	flags.StringSliceVar(&a.global.Fields, "fields", nil, "comma-separated JSON fields to include")
+	flags.StringSliceVar(&a.global.Fields, "fields", nil, "comma-separated JSON fields to include; pass an unknown name to list them")
 	flags.BoolVar(&a.global.NoInput, "no-input", false, "never prompt for input")
 	flags.BoolVar(&a.global.NoColor, "no-color", false, "disable color output")
 	flags.BoolVarP(&a.global.Quiet, "quiet", "q", false, "suppress non-essential human output")

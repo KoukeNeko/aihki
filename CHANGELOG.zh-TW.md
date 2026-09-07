@@ -8,6 +8,10 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+### 變更
+
+- CLI 現在會直接說明它期待什麼，而不是留給你去查。參數錯誤會附上該指令的 usage，所以 `custom-field list` 會指名 `<epic|story|task|issue>`，不再只是數少了幾個；`--fields` 的說明寫明傳一個不存在的名稱就會列出可用欄位，而那份清單是唯一完整的來源——取樣時剛好沒出現的欄位仍然會列在裡面；根層說明則會指引無人值守的呼叫端去看 `aihki schema <command>`，取得該指令的 schema、safety 與 idempotency。這三點都是實際操作這個 CLI 時走錯的路，現在都在走錯的當下回答，而不是寫進 README。
+
 ### 修正
 
 - 表格若只裝得下整份清單的其中一頁，現在會在 stderr 說明，格式為 `showing 30 of 54; use --limit to see more`。在此之前，表格在頁面大小處停住的樣子跟清單真的到此為止一模一樣，於是 `story history`、`story list` 以及其他所有分頁表格都在無聲地誘導你用一部分資料下結論。提示不會寫到 stdout，表格照樣可以接管線；整份都顯示得下時不會出現；`--quiet` 之下靜音。JSON 輸出不變，它本來就帶著 `page`。

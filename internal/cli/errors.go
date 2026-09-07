@@ -50,10 +50,18 @@ func validationError(code, message string) error {
 	return &contractError{Code: code, Message: message, ExitCode: ExitValidation}
 }
 
+// argumentUsage names what the command expected. A count on its own says
+// nothing about what to pass, which sends a person back to help and leaves an
+// unattended caller retrying the same call; the Use line already carries the
+// argument names, so the error carries it too.
+func argumentUsage(cmd *cobra.Command) string {
+	return "; usage: " + cmd.UseLine()
+}
+
 func exactArgs(expected int) cobra.PositionalArgs {
 	return func(cmd *cobra.Command, args []string) error {
 		if len(args) != expected {
-			return usageError(fmt.Sprintf("%s accepts %d argument(s), received %d", cmd.CommandPath(), expected, len(args)))
+			return usageError(fmt.Sprintf("%s accepts %d argument(s), received %d%s", cmd.CommandPath(), expected, len(args), argumentUsage(cmd)))
 		}
 		return nil
 	}
