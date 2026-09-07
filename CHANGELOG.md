@@ -8,6 +8,10 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+### Added
+
+- `aihki schema` now describes what is in a list, not only that there is one. Every list command's `output_schema` carries the shape of one item — the encoded field names, their types, and which of them are always written — derived from the type the command emits, so it cannot drift from what is actually sent. The optional ones matter most: `story history` declares `comment` as a field that may be absent, which is the difference between a row that carries no comment and a command that has no such field, and reading one row cannot tell those apart. `tag list` and `integration providers` build their rows on the spot and so still describe only the envelope.
+
 ### Changed
 
 - The CLI now says what it expects rather than leaving it to be looked up. An argument error carries the command's usage line, so `custom-field list` names `<epic|story|task|issue>` instead of only counting what was missing; `--fields` says that an unknown name lists the available ones, which is the one complete source, since a field the sampled row left out still appears there; and the root help points an unattended caller at `aihki schema <command>` for a command's schemas, safety and idempotency. Each of these was a wrong turn taken while driving the CLI, and each is now answered where the wrong turn happens rather than in the README.

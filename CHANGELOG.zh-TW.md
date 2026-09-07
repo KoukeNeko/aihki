@@ -8,6 +8,10 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+### 新增
+
+- `aihki schema` 現在會描述列表裡裝的是什麼，而不只是說「這是一個列表」。每個列表指令的 `output_schema` 都帶著單一項目的形狀——編碼後的欄位名、型別，以及哪些欄位一定會被寫出——由該指令實際輸出的型別推導而來，因此不會與真正送出的內容脫節。其中「可選」的資訊最關鍵：`story history` 會聲明 `comment` 是一個可能缺席的欄位，而這正是「這一列沒有留言」與「這個指令沒有這個欄位」的差別，只讀一列是分不出來的。`tag list` 與 `integration providers` 的每一列是就地組出來的，沒有型別可依據，因此仍然只描述外層信封。
+
 ### 變更
 
 - CLI 現在會直接說明它期待什麼，而不是留給你去查。參數錯誤會附上該指令的 usage，所以 `custom-field list` 會指名 `<epic|story|task|issue>`，不再只是數少了幾個；`--fields` 的說明寫明傳一個不存在的名稱就會列出可用欄位，而那份清單是唯一完整的來源——取樣時剛好沒出現的欄位仍然會列在裡面；根層說明則會指引無人值守的呼叫端去看 `aihki schema <command>`，取得該指令的 schema、safety 與 idempotency。這三點都是實際操作這個 CLI 時走錯的路，現在都在走錯的當下回答，而不是寫進 README。
