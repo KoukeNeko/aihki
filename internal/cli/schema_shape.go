@@ -27,6 +27,15 @@ func listOutputOf(sample any) map[string]any {
 	}, "items", "meta")
 }
 
+// dataOutputOf is the single-item envelope with the shape of the thing in it,
+// the counterpart of listOutputOf for a command that answers with one.
+func dataOutputOf(sample any) map[string]any {
+	return objectSchema(map[string]any{
+		"data": schemaOf(sample),
+		"meta": map[string]any{"type": "object"},
+	}, "data", "meta")
+}
+
 func typeSchema(typeOf reflect.Type, depth int) map[string]any {
 	for typeOf != nil && typeOf.Kind() == reflect.Pointer {
 		typeOf = typeOf.Elem()

@@ -110,3 +110,41 @@ func TestDescribedShapeMatchesWhatAListEmits(t *testing.T) {
 		}
 	}
 }
+
+// The same guarantee for a command that answers with one thing rather than a
+// page of them: what it sends has to be what its schema describes.
+func TestDescribedShapeMatchesWhatAViewEmits(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/api/v1/projects/by_slug":
+			_, _ = io.WriteString(w, `{"id":1,"name":"Demo","slug":"demo"}`)
+		case "/api/v1/userstories/by_ref":
+			_, _ = io.WriteString(w, `{"id":1,"ref":76,"subject":"one","version":1,"description":"body","total_points":3,"status_extra_info":{"name":"New"}}`)
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer server.Close()
+	app, out, stderr, _ := testApp(t, server)
+	if code := app.Execute(context.Background(), []string{"--json", "story", "view", "76", "--project", "demo"}); code != ExitSuccess {
+		t.Fatalf("exit=%d stderr=%s", code, stderr.String())
+	}
+	var envelope struct {
+		Data map[string]any `json:"data"`
+	}
+	if err := json.Unmarshal(out.Bytes(), &envelope); err != nil {
+		t.Fatal(err)
+	}
+	described := descriptors()["story view"].Output["properties"].(map[string]any)["data"].(map[string]any)
+	properties := described["properties"].(map[string]any)
+	for field := range envelope.Data {
+		if _, ok := properties[field]; !ok {
+			t.Errorf("story view emits %q, which its schema does not describe", field)
+		}
+	}
+	for _, field := range described["required"].([]string) {
+		if _, ok := envelope.Data[field]; !ok {
+			t.Errorf("schema requires %q, which story view did not emit", field)
+		}
+	}
+}
