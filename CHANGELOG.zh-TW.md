@@ -8,6 +8,12 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+## [0.5.1] - 2026-09-08
+
+### 修正
+
+- 0.2.0 的更名說明寫著 Taiga 維護者曾要求分家專案放棄該名稱，但公開紀錄裡並沒有這件事。有紀錄的是：Taiga 製作方改用 MPL-2.0 是為了取得對商標的更多控制權，以及後繼專案交由另一家公司接手時 Kaleidos 保留了品牌、該專案改以自己的名字發布。該段落現在只陳述這些，既查得到，也是本專案該有自己名字的更有力理由。
+
 ## [0.5.0] - 2026-09-07
 
 兩件呼叫端原本不開口就不會知道的事，現在都有答案了。`aihki auth login` 即使 profile 已經存過網址，仍會先問要登入哪一個 Taiga，換到另一個 Taiga 不再需要知道 `--url`。而 `aihki schema` 會描述列表項目與單筆回應裡的欄位，由指令實際輸出的型別推導，並標示哪些是可選的，於是「某一列沒有這個欄位」不會被讀成「這個指令沒有這個欄位」。圍繞著這兩件事：表格若只裝得下一頁會直說，參數錯誤會附上該指令的 usage，根層說明則指引無人值守的呼叫端去看 `schema`。
@@ -140,7 +146,7 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ### 更名為 Aihki
 
-專案更名為 **Aihki**，執行檔為 `aihki`。Taiga 以 MPL-2.0 釋出，其第 2.3 節明文不授予商標與 logo 權利，而 Taiga 的維護者先前也曾要求分家專案放棄該名稱。把他人的商標當作本專案自己的識別，從來就不是那份授權支持的事；因此該名稱現在只用於描述本客戶端所搭配的軟體。
+專案更名為 **Aihki**，執行檔為 `aihki`。Taiga 以 MPL-2.0 釋出，其第 2.3 節明文不授予商標與 logo 權利；製作方自己說明過，改用這份授權是為了對 Taiga 商標取得更多控制權。而後繼專案交由另一家公司接手時，Kaleidos 保留了品牌，該專案改以自己的名字發布。把他人的商標當作本專案自己的識別，從來就不是那份授權支持的事；因此該名稱現在只用於描述本客戶端所搭配的軟體。
 
 與 Taiga 的整合沒有任何改變，改變的是這個工具本身的識別。
 
@@ -206,7 +212,8 @@ brew install koukeneko/tap/aihki
 
 已針對 Taiga 6.10.2 以固定 image digest 執行完整 Docker E2E 驗證。支援 macOS、Linux、Windows 的 `amd64` 與 `arm64`。
 
-[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.0...HEAD
+[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
 [0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2

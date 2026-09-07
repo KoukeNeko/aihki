@@ -8,6 +8,12 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-09-08
+
+### Fixed
+
+- The rename note in 0.2.0 said the Taiga maintainers had required a spin-off to drop the name. Nothing published says that. What is on the record is that Taiga's makers moved to MPL-2.0 for the control it gave them over the trademark, and that Kaleidos kept the brand when the successor project passed to another company, which then shipped under a name of its own. The entry now says only that, which is both checkable and the stronger reason for this project to carry its own name.
+
 ## [0.5.0] - 2026-09-07
 
 Two things a caller could not find out without asking, answered. `aihki auth login` now asks which Taiga to log in to even when the profile already saved one, so moving to another Taiga no longer means knowing `--url`. And `aihki schema` describes the fields inside a list and inside a single answer, derived from the types the commands emit, with the optional ones marked so that a field missing from one row is not read as a field that does not exist. Around those: a table that holds one page of a longer list says so, argument errors carry the command's usage, and the root help points an unattended caller at `schema`.
@@ -140,7 +146,7 @@ Tooling and documentation only. The `aihki` binary is functionally unchanged fro
 
 ### Renamed to Aihki
 
-The project is now **Aihki**, and the binary is `aihki`. Taiga ships under MPL-2.0, whose section 2.3 grants no rights in its trademarks or logos, and the Taiga maintainers have previously required a spin-off to drop the name. Leading with someone else's mark as this project's own identifier was not something the licence ever supported, so the name is now used only to describe what this client talks to.
+The project is now **Aihki**, and the binary is `aihki`. Taiga ships under MPL-2.0, whose section 2.3 grants no rights in its trademarks or logos, and its makers have said they moved to that licence for the control it gave them over the Taiga trademark; when the successor project passed to another company, Kaleidos kept the brand and that project shipped under a name of its own. Leading with someone else's mark as this project's own identifier was not something the licence ever supported, so the name is now used only to describe what this client talks to.
 
 Nothing about the Taiga integration changes. What changes is the identity of this tool.
 
@@ -206,7 +212,8 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
 [0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2
