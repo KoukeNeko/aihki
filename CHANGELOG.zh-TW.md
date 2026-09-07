@@ -8,6 +8,12 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+## [0.5.2] - 2026-09-08
+
+### 變更
+
+- 以 token 登入而沒有帶到 refresh token 時，現在會說明怎麼補。原本只告知這組憑證會過期，而只講這件事等於把人留在原地；因此該提示現在附上一次複製兩個 token 的 console 指令——就是精靈給第三方登入帳號的那一行。
+
 ## [0.5.1] - 2026-09-08
 
 ### 修正
@@ -212,7 +218,8 @@ brew install koukeneko/tap/aihki
 
 已針對 Taiga 6.10.2 以固定 image digest 執行完整 Docker E2E 驗證。支援 macOS、Linux、Windows 的 `amd64` 與 `arm64`。
 
-[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.1...HEAD
+[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.2
 [0.5.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0

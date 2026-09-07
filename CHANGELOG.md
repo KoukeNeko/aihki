@@ -8,6 +8,12 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-09-08
+
+### Changed
+
+- A token login that lands without a refresh token now says how to get one. It already said the login would expire; saying only that leaves a person exactly where the message found them, so the notice carries the console one-liner that copies both tokens — the same one the wizard offers an account that signs in through a provider.
+
 ## [0.5.1] - 2026-09-08
 
 ### Fixed
@@ -212,7 +218,8 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.2
 [0.5.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0

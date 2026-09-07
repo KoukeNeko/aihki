@@ -297,3 +297,37 @@ func TestLoginKeepsTheSavedURLOffATerminal(t *testing.T) {
 		t.Errorf("prompt = %q, want nothing asked", prompts.String())
 	}
 }
+
+// A login that lands without a refresh token dies when the access token
+// expires, and saying so without saying what to do about it leaves the person
+// exactly where the message found them. The way out is the same console
+// one-liner the wizard already offers, so the notice carries it.
+func TestTokenLoginSaysHowToGetARefreshToken(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/api/v1/users/me" {
+			_, _ = io.WriteString(w, `{"id":1,"username":"demo"}`)
+			return
+		}
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer server.Close()
+	for name, tc := range map[string]struct {
+		stdin      string
+		wantAdvice bool
+	}{
+		"bare token":     {stdin: "pasted-token", wantAdvice: true},
+		"with a refresh": {stdin: `{"auth_token":"pasted-token","refresh":"pasted-refresh"}`, wantAdvice: false},
+	} {
+		t.Run(name, func(t *testing.T) {
+			app, out, stderr, _ := testApp(t, server)
+			app.In = strings.NewReader(tc.stdin + "\n")
+			if code := app.Execute(context.Background(), []string{"--profile", "advice", "--api-url", server.URL + "/api/v1/", "auth", "login", "--with-token"}); code != ExitSuccess {
+				t.Fatalf("exit=%d stderr=%s", code, stderr.String())
+			}
+			hasAdvice := strings.Contains(out.String(), consoleCopySnippet)
+			if hasAdvice != tc.wantAdvice {
+				t.Errorf("advice shown = %t, want %t; stdout = %q", hasAdvice, tc.wantAdvice, out.String())
+			}
+		})
+	}
+}

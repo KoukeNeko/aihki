@@ -108,7 +108,13 @@ func (a *App) login(ctx context.Context, options loginOptions) error {
 	if !a.global.Quiet {
 		_, _ = fmt.Fprintf(a.Out, "Logged in to %s as %s (profile %s)\n", target.apiURL, user.Username, settings.Profile)
 		if tokens.RefreshToken == "" {
-			_, _ = fmt.Fprintln(a.Out, "No refresh token was given, so this login lasts until the token expires.")
+			// Saying the login will expire without saying what to do about it
+			// leaves the person where the message found them. The way out is
+			// the console one-liner the wizard already offers.
+			_, _ = fmt.Fprint(a.Out, "No refresh token was given, so this login lasts until the token expires.\n"+
+				"For a login that renews itself, run this in the web app's JavaScript console\n"+
+				"  "+consoleCopySnippet+"\n"+
+				"and log in again, pasting the object it copies.\n")
 		}
 	}
 	return nil
