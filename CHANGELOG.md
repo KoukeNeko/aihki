@@ -8,6 +8,10 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+## [0.5.0-rc.1] - 2026-09-07
+
+Logging in is where this release goes. `aihki auth login` now asks which Taiga to log in to even when the profile already saved one, so moving to another Taiga no longer means knowing `--url`, and Enter keeps the saved URL without contacting anything. A URL under `taiga.io` that is not the web app, such as the community forum, is now offered the hosted app instead of only being refused.
+
 ### Added
 
 - When the address given to an interactive `auth login` is under `taiga.io` but is not the web app, such as the community forum, the login offers `https://tree.taiga.io/` and continues there on a yes. Nothing is contacted beyond the typed site until the person has answered, and a script still gets the error, because nothing may choose a destination for it.
@@ -197,7 +201,8 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.0-rc.1...HEAD
+[0.5.0-rc.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0-rc.1
 [0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
 [0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2
 [0.3.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.1
