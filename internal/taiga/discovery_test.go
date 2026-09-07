@@ -259,16 +259,24 @@ func TestDiscoverAPIReportsAnUnreachableSite(t *testing.T) {
 
 // Under the hosted Taiga's domain the web app has one address, so a forum or
 // a marketing host there is told where the app is rather than given an example.
-func TestDiscoveryAdviceNamesTheHostedAppForItsDomain(t *testing.T) {
-	for hostname, want := range map[string]string{
-		"community.taiga.io": "The hosted Taiga web app is " + HostedTaigaApp + "; paste the URL of any page inside it",
-		"taiga.io":           "The hosted Taiga web app is " + HostedTaigaApp + "; paste the URL of any page inside it",
-		"tree.taiga.io":      "Paste the URL of any page inside the Taiga web app, such as a project or backlog page; the hosted Taiga web app is " + HostedTaigaApp,
-		"taiga.example.com":  "Paste the URL of any page inside the Taiga web app, such as a project or backlog page; the hosted Taiga web app is " + HostedTaigaApp,
-		"nottaiga.io":        "Paste the URL of any page inside the Taiga web app, such as a project or backlog page; the hosted Taiga web app is " + HostedTaigaApp,
+func TestHostedTaigaForKnowsItsOwnDomainOnly(t *testing.T) {
+	for site, want := range map[string]bool{
+		"https://community.taiga.io/":  true,
+		"https://taiga.io/pricing":     true,
+		"https://api.taiga.io/api/v1/": true,
+		"https://tree.taiga.io/":       false,
+		"https://taiga.example.com/":   false,
+		"https://nottaiga.io/":         false,
 	} {
-		if got := discoveryAdvice(hostname); got != want {
-			t.Errorf("%s: got %q, want %q", hostname, got, want)
+		app, ok := HostedTaigaFor(site)
+		if ok != want || (ok && app != HostedTaigaApp) {
+			t.Errorf("%s: got %q, %t; want %t", site, app, ok, want)
 		}
+	}
+	if !strings.Contains(discoveryAdvice("https://community.taiga.io/"), "The hosted Taiga web app is "+HostedTaigaApp) {
+		t.Error("advice for a taiga.io host must name the hosted app")
+	}
+	if !strings.Contains(discoveryAdvice("https://taiga.example.com/"), "such as a project or backlog page") {
+		t.Error("advice for another site must describe what to paste")
 	}
 }

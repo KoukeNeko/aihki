@@ -161,6 +161,16 @@ func TestTokenLoginRefreshesAnExpiredAccessToken(t *testing.T) {
 	}
 }
 
+func TestConfirmTakesEnterAsYes(t *testing.T) {
+	for input, want := range map[string]bool{"\n": true, "y\n": true, "Yes\n": true, "n\n": false, "no\n": false, "maybe\n": false} {
+		app := &App{In: strings.NewReader(input), Err: &bytes.Buffer{}}
+		got, err := app.confirm("Proceed?")
+		if err != nil || got != want {
+			t.Errorf("input %q: got %t, %v; want %t", input, got, err, want)
+		}
+	}
+}
+
 func TestReadLineOrFallsBackOnEnter(t *testing.T) {
 	for input, want := range map[string]string{"\n": "https://tree.taiga.io/", "  \n": "https://tree.taiga.io/", "https://taiga.example/\n": "https://taiga.example/", "https://taiga.example/": "https://taiga.example/"} {
 		prompts := &bytes.Buffer{}

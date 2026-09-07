@@ -131,11 +131,44 @@ func (a *App) loginTarget(ctx context.Context, siteURL string, settings Settings
 			return loginTarget{}, err
 		}
 	}
-	front, err := taiga.DiscoverAPI(ctx, a.HTTPClient, siteURL)
+	front, err := a.discoverOrOfferHosted(ctx, siteURL)
 	if err != nil {
 		return loginTarget{}, err
 	}
 	return loginTarget{apiURL: front.API, site: front.Site}, nil
+}
+
+// discoverOrOfferHosted finds the Taiga behind siteURL. When the site is under
+// the hosted Taiga's domain but is not the app -- the forum, most often -- a
+// terminal is offered the app instead, since that is a fact about the domain
+// rather than a guess; the person answers before anything else is contacted,
+// and a script still gets the error, because nothing may choose a destination
+// for it.
+func (a *App) discoverOrOfferHosted(ctx context.Context, siteURL string) (taiga.FrontConfig, error) {
+	front, err := taiga.DiscoverAPI(ctx, a.HTTPClient, siteURL)
+	if err == nil {
+		return front, nil
+	}
+	hosted, ok := taiga.HostedTaigaFor(siteURL)
+	if !ok || !isWrongSite(err) || a.global.NoInput || !a.stdinTTY() {
+		return taiga.FrontConfig{}, err
+	}
+	_, _ = fmt.Fprintf(a.Err, "%s is not a Taiga web app or API.\n", siteURL)
+	accepted, confirmErr := a.confirm("Use " + hosted + " instead?")
+	if confirmErr != nil {
+		return taiga.FrontConfig{}, confirmErr
+	}
+	if !accepted {
+		return taiga.FrontConfig{}, err
+	}
+	return taiga.DiscoverAPI(ctx, a.HTTPClient, hosted)
+}
+
+// isWrongSite reports whether discovery reached the site and found no Taiga
+// there, as opposed to failing to reach it at all.
+func isWrongSite(err error) bool {
+	var apiErr *taiga.Error
+	return errors.As(err, &apiErr) && apiErr.Kind != taiga.KindTransport
 }
 
 // askSite asks for the Taiga site as one question, the same for every site.
@@ -352,6 +385,17 @@ func (a *App) readLine(prompt string) (string, error) {
 		return "", validationError("empty_input", "input cannot be empty")
 	}
 	return line, nil
+}
+
+// confirm asks a yes-or-no question; Enter means yes.
+func (a *App) confirm(question string) (bool, error) {
+	_, _ = fmt.Fprintf(a.Err, "%s [Y/n]: ", question)
+	line, err := bufio.NewReader(a.In).ReadString('\n')
+	if err != nil && err != io.EOF {
+		return false, fmt.Errorf("read input: %w", err)
+	}
+	answer := strings.ToLower(strings.TrimSpace(line))
+	return answer == "" || answer == "y" || answer == "yes", nil
 }
 
 // readLineOr reads one line, showing fallback in the prompt and returning it

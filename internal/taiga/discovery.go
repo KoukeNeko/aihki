@@ -299,7 +299,7 @@ func notTaigaError(typed *url.URL, first *discoveryProbe, tried []discoveryAttem
 	for _, attempt := range tried {
 		attempts = append(attempts, attempt.url.String()+" "+attempt.outcome)
 	}
-	message := fmt.Sprintf("%s is not the address of a Taiga web app or API. Tried, sending no credentials: %s. %s", typed, strings.Join(attempts, "; "), discoveryAdvice(typed.Hostname()))
+	message := fmt.Sprintf("%s is not the address of a Taiga web app or API. Tried, sending no credentials: %s. %s", typed, strings.Join(attempts, "; "), discoveryAdvice(typed.String()))
 	operation := "GET " + typed.ResolveReference(&url.URL{Path: "conf.json"}).Path
 	if first != nil && first.redirectedTo == nil && first.status != http.StatusOK {
 		apiErr := decodeAPIError(operation, first.status, first.body)
@@ -309,13 +309,29 @@ func notTaigaError(typed *url.URL, first *discoveryProbe, tried []discoveryAttem
 	return &Error{Kind: KindValidation, Operation: operation, Message: message, Retryable: false}
 }
 
+// HostedTaigaFor names the hosted web app for a site under the hosted Taiga's
+// domain that is not the app itself, such as the forum, the marketing site or
+// the API, and reports false for any other site. It is a fact about one domain
+// rather than a guess, which is what lets a login offer it.
+func HostedTaigaFor(site string) (string, bool) {
+	parsed, err := url.Parse(strings.TrimSpace(site))
+	if err != nil {
+		return "", false
+	}
+	hostname := parsed.Hostname()
+	hosted := hostname == hostedTaigaDomain || strings.HasSuffix(hostname, "."+hostedTaigaDomain)
+	if !hosted || "https://"+hostname+"/" == HostedTaigaApp {
+		return "", false
+	}
+	return HostedTaigaApp, true
+}
+
 // discoveryAdvice says what the address should have been. Under the hosted
 // Taiga's domain the web app has one known address, which is stated;
 // elsewhere it can only be described.
-func discoveryAdvice(hostname string) string {
-	hosted := hostname == hostedTaigaDomain || strings.HasSuffix(hostname, "."+hostedTaigaDomain)
-	if hosted && "https://"+hostname+"/" != HostedTaigaApp {
-		return "The hosted Taiga web app is " + HostedTaigaApp + "; paste the URL of any page inside it"
+func discoveryAdvice(site string) string {
+	if app, ok := HostedTaigaFor(site); ok {
+		return "The hosted Taiga web app is " + app + "; paste the URL of any page inside it"
 	}
 	return "Paste the URL of any page inside the Taiga web app, such as a project or backlog page; the hosted Taiga web app is " + HostedTaigaApp
 }

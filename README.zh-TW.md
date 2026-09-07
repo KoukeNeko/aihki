@@ -141,7 +141,7 @@ aihki project use example-project --local
 
    要跳過第一個問題，用 `--url` 貼上 Taiga 網頁應用裡任何一頁的網址，例如專案或 backlog 頁面；填 API 的位址
    也可以，而且只會接觸你輸入的那個站台。官方託管的 Taiga 在 `https://tree.taiga.io/`；`community.taiga.io`
-   是論壇，帳號系統不同。
+   是論壇，帳號系統不同，貼了它的網址時會改問你要不要用託管版。
 
    ```sh
    aihki auth login --url https://taiga.example.com/taiga/ --profile company

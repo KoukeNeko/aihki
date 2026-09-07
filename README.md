@@ -159,7 +159,7 @@ or credentials — created locally and never uploaded.
    To skip the first question, pass `--url` with the URL of any page inside the Taiga web app, such
    as a project or backlog page; the API's address works too, and nothing beyond the site you typed
    is contacted. The hosted Taiga is `https://tree.taiga.io/`; the forum at `community.taiga.io` is
-   a different site with its own accounts.
+   a different site with its own accounts, and pasting its address offers the hosted app instead.
 
    ```sh
    aihki auth login --url https://taiga.example.com/taiga/ --profile company

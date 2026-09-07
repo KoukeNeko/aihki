@@ -10,6 +10,7 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ### Added
 
+- When the address given to an interactive `auth login` is under `taiga.io` but is not the web app, such as the community forum, the login offers `https://tree.taiga.io/` and continues there on a yes. Nothing is contacted beyond the typed site until the person has answered, and a script still gets the error, because nothing may choose a destination for it.
 - `auth login --with-token` accepts the JSON object the web app holds, `{"auth_token": …, "refresh": …}`, as well as a bare token. With the refresh token an imported login renews itself the way a password login does, instead of ending when the access token expires; the wizard and the README give the console one-liner that copies both. The result says whether a refresh token was stored.
 
 ## [0.4.0] - 2026-09-03

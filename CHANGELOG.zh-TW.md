@@ -10,6 +10,7 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ### 新增
 
+- 互動式 `auth login` 收到的網址在 `taiga.io` 底下卻不是網頁應用（最常見的是社群論壇）時，會提議改用 `https://tree.taiga.io/`，回答 yes 就接續登入。在回答之前不會接觸你輸入以外的任何站台；script 仍然會拿到錯誤，因為不該有任何東西替它決定目的地。
 - `auth login --with-token` 除了單一 token，也接受網頁應用持有的 JSON 物件 `{"auth_token": …, "refresh": …}`。帶著 refresh token 的匯入登入能像密碼登入一樣自動更新，不再於 access token 過期時失效；精靈與 README 提供一次複製兩者的 console 指令。結果會標示是否存入了 refresh token。
 
 ## [0.4.0] - 2026-09-03
