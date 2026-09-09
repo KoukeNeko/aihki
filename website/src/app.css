@@ -31,13 +31,13 @@
 .theme-control {
   display: grid;
   place-items: center;
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
   margin-left: 18px;
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 7px;
   color: var(--ink);
   background: var(--surface);
   cursor: pointer;
@@ -188,7 +188,8 @@ nav {
   transform: translateY(-2px);
 }
 .button.small {
-  padding: 11px 17px;
+  height: 40px;
+  padding: 0 17px;
   gap: 24px;
 }
 .menu-button {
@@ -1023,12 +1024,14 @@ footer > div:last-child {
     font-size: 35px;
   }
   .menu-button {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
     border: 1px solid var(--line);
     background: #fff;
-    border-radius: 5px;
+    border-radius: 7px;
     font-size: 12px;
-    padding: 9px 12px;
+    padding: 0 14px;
   }
   nav {
     display: none;
