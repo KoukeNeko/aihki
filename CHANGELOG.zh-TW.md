@@ -8,6 +8,8 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+## [0.6.0] - 2026-09-09
+
 ### 改回 Taiga CLI
 
 專案重新命名回 **Taiga CLI**，執行檔為 `taiga`。Taiga 團隊在[社群論壇](https://community.taiga.io/t/aihki-a-cli-client-for-taiga-plus-a-naming-question/8947)上確認：一個明確獨立、規模不大的 side project 以 Taiga 之名描述自己並不成問題；他們在意的是已退役的「TaigaNext」名稱，而不是第三方 client。用來描述此 client 連線對象的名稱，如今也成為 client 自己的名稱，難打的 `aihki` 指令就此走入歷史。
@@ -226,7 +228,8 @@ brew install koukeneko/tap/aihki
 
 已針對 Taiga 6.10.2 以固定 image digest 執行完整 Docker E2E 驗證。支援 macOS、Linux、Windows 的 `amd64` 與 `arm64`。
 
-[未發布]: https://github.com/KoukeNeko/taiga-cli/compare/v0.5.2...HEAD
+[未發布]: https://github.com/KoukeNeko/taiga-cli/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.6.0
 [0.5.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.2
 [0.5.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.0

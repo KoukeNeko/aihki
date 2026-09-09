@@ -8,6 +8,8 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-09
+
 ### Renamed back to Taiga CLI
 
 The project is **Taiga CLI** again, and the binary is `taiga`. The Taiga team confirmed on the [community forum](https://community.taiga.io/t/aihki-a-cli-client-for-taiga-plus-a-naming-question/8947) that a small, clearly independent side project describing itself with the Taiga name is not a problem; the concern they raised was the retired "TaigaNext" name, not a third-party client. The name used to describe what this client talks to now also names the client, and the `aihki` command that was awkward to type is gone.
@@ -226,7 +228,8 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/taiga-cli/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/KoukeNeko/taiga-cli/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.6.0
 [0.5.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.2
 [0.5.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.1
 [0.5.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.0
