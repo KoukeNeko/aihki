@@ -77,6 +77,14 @@ https://taiga.example.com/taiga/project/example-project/issue/42
 input/output JSON Schema 與 safety/idempotency 標註 —— agent 可以據此判斷一個指令能不能自動執行。
 Exit code 依錯誤種類固定分流，`--dry-run` 會完整解析並顯示將送出的變更，但保證不發出任何寫入請求。
 
+```text
+$ taiga schema issue create
+{"data":{"command":"issue create","safety":"write","idempotency":"non_idempotent",
+         "input_schema":{...,"required":["subject"]},"output_schema":{...}},"meta":{"contract":1}}
+```
+
+agent 讀 `safety` 與 `idempotency` 決定能否自動執行，讀 schema 組出並驗證呼叫——不必去刮 `--help`。
+
 ### 不會意外破壞資料
 
 刪除工作項目與 metadata 後會回讀確認；附件與 CSV 下載走 streaming、核對雜湊、以 `0600` 暫存檔原子落盤，
@@ -110,6 +118,22 @@ taiga project use example-project --local
 `taiga doctor` 逐項檢查 frontend discovery、API、authentication 與預設專案。需要求助時，
 `taiga doctor bundle` 產生一份可以安心分享的診斷包 —— 只有版本資訊、設定「是否存在」的布林值與
 狀態碼，不含任何 URL、使用者名稱、專案名稱或憑證，而且只在本機建立、不會自動上傳。
+
+### 如何比較
+
+一支 binary，讓人、shell script、CI job 與 agent 都能共用——最低共同介面，不必再多跑一個服務。
+
+|                        | Web UI | 一般 CLI | Taiga CLI | MCP server |
+| ---------------------- | :----: | :------: | :-------: | :--------: |
+| 終端機前的人           |   ✅   |    ✅    |    ✅     |     —      |
+| Shell script           |   —    |    ✅    |    ✅     |     —      |
+| CI pipeline            |   —    |    ⚠️    |    ✅     |     ⚠️     |
+| AI agent               |   —    |    ⚠️    |    ✅     |     ✅     |
+| 穩定 JSON contract     |   —    |    ⚠️    |    ✅     |     ✅     |
+| 每個指令的 JSON Schema |   —    |    —     |    ✅     |   varies   |
+| Dry-run                |   —    |    ⚠️    |    ✅     |   varies   |
+| Conflict-safe 寫入     |  n/a   |  varies  |    ✅     |   varies   |
+| 不需額外 daemon        |   —    |    ✅    |    ✅     |     —      |
 
 ## 快速開始
 

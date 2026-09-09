@@ -83,6 +83,15 @@ annotations — enough for an agent to decide whether a command may run unattend
 partitioned by failure kind, and `--dry-run` resolves and displays the mutation it would send while
 guaranteeing that no write request leaves the process.
 
+```text
+$ taiga schema issue create
+{"data":{"command":"issue create","safety":"write","idempotency":"non_idempotent",
+         "input_schema":{...,"required":["subject"]},"output_schema":{...}},"meta":{"contract":1}}
+```
+
+An agent reads `safety` and `idempotency` to decide whether a command may run unattended, and the
+schemas to build and validate the call — nothing is scraped from `--help`.
+
 ### Hard to break things with
 
 Deleting work items and metadata is verified by reading the target back. Attachment and CSV downloads
@@ -125,6 +134,23 @@ taiga project use example-project --local
 one. When you need help, `taiga doctor bundle` produces a report you can share without worrying:
 version information, presence booleans, and status codes only — no URLs, usernames, project names,
 or credentials — created locally and never uploaded.
+
+### How it compares
+
+One binary that a person, a shell script, a CI job, and an agent can all share — the lowest common
+interface, without running another service.
+
+|                          | Web UI | Basic CLI | Taiga CLI | MCP server |
+| ------------------------ | :----: | :-------: | :-------: | :--------: |
+| A person at a terminal   |   ✅   |    ✅     |    ✅     |     —      |
+| Shell scripts            |   —    |    ✅     |    ✅     |     —      |
+| CI pipelines             |   —    |    ⚠️     |    ✅     |     ⚠️     |
+| AI agents                |   —    |    ⚠️     |    ✅     |     ✅     |
+| Stable JSON contract     |   —    |    ⚠️     |    ✅     |     ✅     |
+| JSON Schema per command  |   —    |    —      |    ✅     |   varies   |
+| Dry-run                  |   —    |    ⚠️     |    ✅     |   varies   |
+| Conflict-safe writes     |  n/a   |  varies   |    ✅     |   varies   |
+| No extra daemon          |   —    |    ✅     |    ✅     |     —      |
 
 ## Getting started
 
