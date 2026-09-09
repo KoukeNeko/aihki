@@ -147,7 +147,7 @@ taiga project use example-project --local
 
    ```powershell
    scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
-   scoop install taiga
+   scoop install koukeneko/taiga-cli
    ```
 
    Debian/Ubuntu 或 Fedora/RHEL 可加簽章的 APT/DNF 倉庫自動升級，或直接下載 `.deb` / `.rpm`——見

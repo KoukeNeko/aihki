@@ -64,17 +64,18 @@ To try a pre-release, download the archive manually as described in the next sec
 
 ```powershell
 scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
-scoop install taiga
+scoop install koukeneko/taiga-cli
 ```
 
 Upgrading:
 
 ```powershell
-scoop update taiga
+scoop update taiga-cli
 ```
 
 The manifest tracks the GitHub releases and auto-updates to new stable versions. Scoop verifies each
-download against the release checksums and shims `taiga` onto your PATH.
+download against the release checksums and shims `taiga` onto your PATH. It is installed by its
+bucket-qualified name because Scoop's `extras` bucket already has an unrelated `taiga`.
 
 ## Linux packages (.deb and .rpm)
 
@@ -229,7 +230,7 @@ brew uninstall taiga
 Scoop:
 
 ```powershell
-scoop uninstall taiga
+scoop uninstall taiga-cli
 ```
 
 Everything else:

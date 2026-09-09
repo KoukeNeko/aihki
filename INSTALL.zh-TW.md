@@ -59,17 +59,17 @@ Tap 只追蹤**正式版**，不會安裝 pre-release。Formula 安裝的是 rel
 
 ```powershell
 scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
-scoop install taiga
+scoop install koukeneko/taiga-cli
 ```
 
 升級：
 
 ```powershell
-scoop update taiga
+scoop update taiga-cli
 ```
 
 Manifest 追蹤 GitHub releases 並自動更新到新的正式版。Scoop 會用 release checksum 核對每次下載，並把
-`taiga` 加進 PATH。
+`taiga` 加進 PATH。因 Scoop 官方 `extras` 已有無關的 `taiga`，故用 bucket 限定名安裝。
 
 ## Linux 套件（.deb 與 .rpm）
 
@@ -211,7 +211,7 @@ brew uninstall taiga
 Scoop：
 
 ```powershell
-scoop uninstall taiga
+scoop uninstall taiga-cli
 ```
 
 其他方式：

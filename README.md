@@ -164,7 +164,7 @@ interface, without running another service.
 
    ```powershell
    scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
-   scoop install taiga
+   scoop install koukeneko/taiga-cli
    ```
 
    On Debian/Ubuntu or Fedora/RHEL, add the signed APT/DNF repository for auto-updating installs, or
