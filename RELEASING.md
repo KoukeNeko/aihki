@@ -65,6 +65,37 @@ Pre-release 的 asset、checksum、SBOM 與版本 metadata 驗證方式與正式
 - 需要在不發新版的情況下修正 formula，或替既有版本補上 formula 時，手動執行 `Update Homebrew tap`
   workflow 並指定版本號。
 
+## winget
+
+winget 套件不會隨 release 自動更新，每次**正式版**發布後手動送一次 manifest 更新到 [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs)。套件識別碼為 `KoukeNeko.TaigaCLI`。
+
+Manifest 位於 `manifests/k/KoukeNeko/TaigaCLI/<version>/`，共四個檔：`KoukeNeko.TaigaCLI.yaml`（version）、`KoukeNeko.TaigaCLI.installer.yaml`、`KoukeNeko.TaigaCLI.locale.en-US.yaml`、`KoukeNeko.TaigaCLI.locale.zh-TW.yaml`。改版時只需更新：
+
+- `PackageVersion`（四個檔一致）。
+- installer 的兩個 Windows zip：`InstallerUrl`（指向新 tag）與 `InstallerSha256`（取自 release 的 `SHA256SUMS`，習慣用大寫）。
+- installer 的 `NestedInstallerFiles.RelativeFilePath`：`taiga_<version>_windows_<arch>\taiga.exe`，`PortableCommandAlias` 為 `taiga`。
+- locale 的 `ReleaseNotesUrl`。
+
+雜湊取法：
+
+```sh
+gh release download "$version" --repo KoukeNeko/taiga-cli --pattern SHA256SUMS --output - | grep windows
+```
+
+送出（在 Windows 上，`winget` 與 `wingetcreate` 為 Windows 工具）：
+
+```
+winget validate --manifest <manifest 資料夾>
+wingetcreate submit --token <github-token> <manifest 資料夾>
+```
+
+或 fork `microsoft/winget-pkgs`，把四個檔放到上述路徑後開 PR。
+
+- 只在**正式版**送 winget；pre-release 不送。
+- 每次改版是**新開一個提交**（PackageVersion 不同的新資料夾），不是改舊 PR。
+- zip 走 `zip` + `portable` nested installer，指向 zip 內的 `taiga.exe`。
+- 送出後 PR 需等 winget-pkgs moderator 核准（會有 msftbot 留言說明），不代表失敗。
+
 ## 發布後驗證
 
 ```sh
