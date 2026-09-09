@@ -10,18 +10,15 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/KoukeNeko/aihki/internal/completioncache"
-	"github.com/KoukeNeko/aihki/internal/config"
-	"github.com/KoukeNeko/aihki/internal/credential"
-	"github.com/KoukeNeko/aihki/internal/output"
-	"github.com/KoukeNeko/aihki/internal/taiga"
+	"github.com/KoukeNeko/taiga-cli/internal/completioncache"
+	"github.com/KoukeNeko/taiga-cli/internal/config"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/output"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
 	"github.com/spf13/cobra"
 )
 
-const (
-	environmentPrefix       = "AIHKI_"
-	legacyEnvironmentPrefix = "TAIGA_"
-)
+const environmentPrefix = "TAIGA_"
 
 type App struct {
 	In              io.Reader
@@ -125,14 +122,14 @@ func (a *App) renderer() output.Renderer {
 
 func (a *App) rootCommand() *cobra.Command {
 	root := &cobra.Command{
-		Use:   "aihki",
+		Use:   "taiga",
 		Short: "Manage Taiga projects from the command line",
 		// An unattended caller reads --help, not the README, and schema is one
 		// alphabetical entry among thirty-odd with nothing marking it as the
 		// one that describes the rest.
 		Long: "Manage Taiga projects from the command line.\n\n" +
 			"--json emits a versioned contract on stdout and a structured error on stderr, under fixed exit codes.\n" +
-			"`aihki schema <command>` prints that command's input and output JSON Schema with its safety and\n" +
+			"`taiga schema <command>` prints that command's input and output JSON Schema with its safety and\n" +
 			"idempotency, which is what an unattended caller needs to decide whether it may run.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -247,10 +244,10 @@ func (a *App) client(ctx context.Context, requireToken bool) (*taiga.Client, Set
 		return nil, Settings{}, err
 	}
 	if settings.APIURL == "" {
-		return nil, Settings{}, validationError("missing_api_url", "no Taiga API URL configured; run `aihki auth login --host <url>` or pass --api-url")
+		return nil, Settings{}, validationError("missing_api_url", "no Taiga API URL configured; run `taiga auth login --host <url>` or pass --api-url")
 	}
 	if requireToken && settings.Token == "" {
-		return nil, Settings{}, authRequired("no Taiga credential available; run `aihki auth login` or set AIHKI_TOKEN")
+		return nil, Settings{}, authRequired("no Taiga credential available; run `taiga auth login` or set TAIGA_TOKEN")
 	}
 	options := []taiga.ClientOption{taiga.WithHTTPClient(a.HTTPClient), taiga.WithToken(settings.Token)}
 	if settings.RefreshToken != "" && a.Credentials != nil {
@@ -266,15 +263,10 @@ func (a *App) client(ctx context.Context, requireToken bool) (*taiga.Client, Set
 	return client, settings, err
 }
 
-// env reads a setting from the current environment variable, falling back to
-// the pre-rename name so existing shells and CI jobs keep working. The old
-// names stay supported rather than failing silently, which is the failure mode
-// that would be hardest for a user to diagnose.
+// env reads a setting from the tool's environment variable for name, so that
+// TAIGA_TOKEN and its siblings override configured values.
 func (a *App) env(name string) string {
-	if value := strings.TrimSpace(a.Getenv(environmentPrefix + name)); value != "" {
-		return value
-	}
-	return strings.TrimSpace(a.Getenv(legacyEnvironmentPrefix + name))
+	return strings.TrimSpace(a.Getenv(environmentPrefix + name))
 }
 
 func firstNonEmpty(values ...string) string {

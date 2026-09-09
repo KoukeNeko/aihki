@@ -46,21 +46,21 @@ jobs:
           # paths back from its own output rather than assuming which candidate
           # it picked.
           mkdir -p "$HOME/.local/share/bash-completion/completions"
-          AIHKI_INSTALL_DIR="$RUNNER_TEMP/bin" sh scripts/install.sh | tee "$RUNNER_TEMP/install.log"
-          "$RUNNER_TEMP/bin/aihki" version --json | grep '"version"'
+          TAIGA_INSTALL_DIR="$RUNNER_TEMP/bin" sh scripts/install.sh | tee "$RUNNER_TEMP/install.log"
+          "$RUNNER_TEMP/bin/taiga" version --json | grep '"version"'
           sed -n 's/^Installed .* completion to //p' "$RUNNER_TEMP/install.log" > "$RUNNER_TEMP/completions.txt"
           test -s "$RUNNER_TEMP/completions.txt"
           while read -r file; do test -s "$file"; done < "$RUNNER_TEMP/completions.txt"
           # The uninstaller has to remove exactly what the installer wrote, so
           # the pair is exercised as a round trip rather than separately.
-          AIHKI_INSTALL_DIR="$RUNNER_TEMP/bin" sh scripts/uninstall.sh
-          test ! -e "$RUNNER_TEMP/bin/aihki"
+          TAIGA_INSTALL_DIR="$RUNNER_TEMP/bin" sh scripts/uninstall.sh
+          test ! -e "$RUNNER_TEMP/bin/taiga"
           while read -r file; do test ! -e "$file"; done < "$RUNNER_TEMP/completions.txt"
       - name: Install and uninstall with the PowerShell scripts
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           ./scripts/install.ps1 -InstallDir "$env:RUNNER_TEMP\bin"
-          & "$env:RUNNER_TEMP\bin\aihki.exe" version --json
+          & "$env:RUNNER_TEMP\bin\taiga.exe" version --json
           ./scripts/uninstall.ps1 -InstallDir "$env:RUNNER_TEMP\bin"
-          if (Test-Path "$env:RUNNER_TEMP\bin\aihki.exe") { throw 'the uninstaller left the binary behind' }
+          if (Test-Path "$env:RUNNER_TEMP\bin\taiga.exe") { throw 'the uninstaller left the binary behind' }

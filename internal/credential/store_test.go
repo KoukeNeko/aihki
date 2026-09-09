@@ -108,45 +108,24 @@ func TestKeyringStoreWrapsBackendErrors(t *testing.T) {
 	}
 }
 
-// The rename must not silently log everyone out, so a credential stored under
-// the previous keyring service is adopted on first read.
-func TestGetAdoptsACredentialFromTheLegacyService(t *testing.T) {
+func TestGetReadsAStoredCredential(t *testing.T) {
 	backend := &fakeBackend{values: map[string]string{
-		legacyServiceName + "|profile|https://example.test/api/v1/": `{"auth_token":"kept","refresh_token":"also-kept"}`,
-	}}
-	store := newKeyringStore(backend)
-	tokens, err := store.Get("profile|https://example.test/api/v1/")
-	if err != nil {
-		t.Fatalf("Get() = %v, want the legacy credential", err)
-	}
-	if tokens.AuthToken != "kept" || tokens.RefreshToken != "also-kept" {
-		t.Fatalf("tokens = %#v", tokens)
-	}
-	if _, ok := backend.values[serviceName+"|profile|https://example.test/api/v1/"]; !ok {
-		t.Fatal("the credential was not copied to the current service, so every run would pay the lookup")
-	}
-}
-
-func TestGetPrefersTheCurrentServiceOverTheLegacyOne(t *testing.T) {
-	backend := &fakeBackend{values: map[string]string{
-		serviceName + "|account":       `{"auth_token":"current"}`,
-		legacyServiceName + "|account": `{"auth_token":"stale"}`,
+		serviceName + "|account": `{"auth_token":"current"}`,
 	}}
 	if tokens, err := newKeyringStore(backend).Get("account"); err != nil || tokens.AuthToken != "current" {
 		t.Fatalf("Get() = %#v, %v", tokens, err)
 	}
 }
 
-func TestGetReportsNotFoundWhenNeitherServiceHasIt(t *testing.T) {
+func TestGetReportsNotFoundWhenMissing(t *testing.T) {
 	if _, err := newKeyringStore(&fakeBackend{values: map[string]string{}}).Get("account"); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("Get() = %v, want ErrNotFound", err)
 	}
 }
 
-func TestDeleteRemovesBothServices(t *testing.T) {
+func TestDeleteRemovesTheCredential(t *testing.T) {
 	backend := &fakeBackend{values: map[string]string{
-		serviceName + "|account":       `{"auth_token":"current"}`,
-		legacyServiceName + "|account": `{"auth_token":"stale"}`,
+		serviceName + "|account": `{"auth_token":"current"}`,
 	}}
 	if err := newKeyringStore(backend).Delete("account"); err != nil {
 		t.Fatal(err)

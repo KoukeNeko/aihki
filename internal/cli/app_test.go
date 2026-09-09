@@ -16,10 +16,10 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/KoukeNeko/aihki/internal/completioncache"
-	"github.com/KoukeNeko/aihki/internal/config"
-	"github.com/KoukeNeko/aihki/internal/credential"
-	"github.com/KoukeNeko/aihki/internal/taiga"
+	"github.com/KoukeNeko/taiga-cli/internal/completioncache"
+	"github.com/KoukeNeko/taiga-cli/internal/config"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
 	"github.com/spf13/cobra"
 )
 
@@ -426,10 +426,10 @@ func TestStoryAndTaskCommandReadAndDryRunContracts(t *testing.T) {
 	for _, args := range commands {
 		app, out, stderr, _ := testApp(t, server)
 		if code := app.Execute(context.Background(), args); code != ExitSuccess {
-			t.Fatalf("aihki %v exit=%d stderr=%s", args, code, stderr.String())
+			t.Fatalf("taiga %v exit=%d stderr=%s", args, code, stderr.String())
 		}
 		if !json.Valid(out.Bytes()) {
-			t.Fatalf("aihki %v returned invalid JSON: %s", args, out.String())
+			t.Fatalf("taiga %v returned invalid JSON: %s", args, out.String())
 		}
 	}
 	if mutations != 0 {
@@ -695,8 +695,6 @@ func TestStoryListRejectsUnknownOrder(t *testing.T) {
 	}
 }
 
-// CI jobs and shells still export the pre-rename variables, so those must keep
-// working, while the current names take precedence when both are set.
 // The client the CLI builds carries no overall deadline: that would cap every
 // attachment and dump at whatever thirty seconds can move.
 func TestNewClientCarriesNoOverallDeadline(t *testing.T) {
@@ -709,23 +707,18 @@ func TestNewClientCarriesNoOverallDeadline(t *testing.T) {
 	}
 }
 
-func TestEnvironmentFallsBackToTheLegacyPrefix(t *testing.T) {
+func TestEnvironmentReadsTheConfiguredPrefix(t *testing.T) {
 	values := map[string]string{}
 	app := &App{Getenv: func(name string) string { return values[name] }}
 
-	values[legacyEnvironmentPrefix+"TOKEN"] = "legacy-token"
-	if got := app.env("TOKEN"); got != "legacy-token" {
-		t.Fatalf("env(TOKEN) = %q, want the legacy value", got)
-	}
-
-	values[environmentPrefix+"TOKEN"] = "current-token"
-	if got := app.env("TOKEN"); got != "current-token" {
-		t.Fatalf("env(TOKEN) = %q, want the current value to win", got)
+	values[environmentPrefix+"TOKEN"] = "token"
+	if got := app.env("TOKEN"); got != "token" {
+		t.Fatalf("env(TOKEN) = %q, want the configured value", got)
 	}
 
 	values[environmentPrefix+"TOKEN"] = "   "
-	if got := app.env("TOKEN"); got != "legacy-token" {
-		t.Fatalf("env(TOKEN) = %q, want a blank current value to fall through", got)
+	if got := app.env("TOKEN"); got != "" {
+		t.Fatalf("env(TOKEN) = %q, want a blank value to trim to empty", got)
 	}
 
 	if got := app.env("PROJECT"); got != "" {

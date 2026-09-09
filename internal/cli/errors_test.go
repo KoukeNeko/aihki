@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KoukeNeko/aihki/internal/taiga"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
 )
 
 // An interrupted write reports that something may have been committed. The
@@ -62,15 +62,15 @@ func TestArgumentErrorsNameWhatWasExpected(t *testing.T) {
 	}{
 		"missing positional": {
 			argv: []string{"custom-field", "list"},
-			want: "usage: aihki custom-field list <epic|story|task|issue>",
+			want: "usage: taiga custom-field list <epic|story|task|issue>",
 		},
 		"positional given as a flag": {
 			argv: []string{"project", "view"},
-			want: "usage: aihki project view <slug>",
+			want: "usage: taiga project view <slug>",
 		},
 		"too many": {
 			argv: []string{"stats", "project", "one", "two"},
-			want: "usage: aihki stats project",
+			want: "usage: taiga stats project",
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -106,7 +106,7 @@ func TestRootHelpPointsAnUnattendedCallerAtSchema(t *testing.T) {
 	if code := app.Execute(context.Background(), []string{"--help"}); code != ExitSuccess {
 		t.Fatalf("exit=%d", code)
 	}
-	for _, want := range []string{"aihki schema", "--json"} {
+	for _, want := range []string{"taiga schema", "--json"} {
 		if !strings.Contains(out.String(), want) {
 			t.Errorf("root help = %q, want it to mention %q", out.String(), want)
 		}

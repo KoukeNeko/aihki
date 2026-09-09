@@ -7,19 +7,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/KoukeNeko/aihki/internal/atomicfile"
+	"github.com/KoukeNeko/taiga-cli/internal/atomicfile"
 	"github.com/pelletier/go-toml/v2"
 )
 
 const defaultProfile = "default"
 
-const (
-	configDirectory = "aihki"
-	// legacyConfigDirectory is where this tool kept its config before it was
-	// renamed. Falling back to it means an existing profile survives the
-	// rename; the next save rewrites it at the current location.
-	legacyConfigDirectory = "taiga-cli"
-)
+const configDirectory = "taiga-cli"
 
 type Profile struct {
 	APIURL  string `toml:"api_url" json:"api_url"`
@@ -49,36 +43,17 @@ func NewStore(path string) *Store {
 
 func (s *Store) Path() string { return s.path }
 
-// legacyPath is the pre-rename sibling of path, used only when path is absent.
-func legacyPath(path string) string {
-	directory := filepath.Dir(path)
-	if filepath.Base(directory) != configDirectory {
-		return ""
-	}
-	return filepath.Join(filepath.Dir(directory), legacyConfigDirectory, filepath.Base(path))
-}
-
 func (s *Store) Load() (File, error) {
 	cfg := File{CurrentProfile: defaultProfile, Profiles: map[string]Profile{}}
-	// source is the file the bytes came from, so that a parse failure names
-	// the file to fix rather than a current path that may not exist yet.
-	source := s.path
-	data, err := os.ReadFile(source)
-	if errors.Is(err, os.ErrNotExist) {
-		if legacy := legacyPath(s.path); legacy != "" {
-			if inherited, legacyErr := os.ReadFile(legacy); legacyErr == nil { // nosemgrep -- the path is built from the config location, never from input
-				data, err, source = inherited, nil, legacy
-			}
-		}
-	}
+	data, err := os.ReadFile(s.path)
 	if errors.Is(err, os.ErrNotExist) {
 		return cfg, nil
 	}
 	if err != nil {
-		return File{}, fmt.Errorf("read config %q: %w", source, err)
+		return File{}, fmt.Errorf("read config %q: %w", s.path, err)
 	}
 	if err := toml.Unmarshal(data, &cfg); err != nil {
-		return File{}, fmt.Errorf("parse config %q: %w", source, err)
+		return File{}, fmt.Errorf("parse config %q: %w", s.path, err)
 	}
 	if cfg.CurrentProfile == "" {
 		cfg.CurrentProfile = defaultProfile

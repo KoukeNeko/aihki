@@ -70,7 +70,7 @@ func (c *Client) DownloadCSV(ctx context.Context, resource, uuid string, destina
 	// Taiga performs API content negotiation before its CSV action returns the
 	// raw response; */* works across releases whose renderer list omits text/csv.
 	request.Header.Set("Accept", "*/*")
-	request.Header.Set("User-Agent", "aihki/0.1")
+	request.Header.Set("User-Agent", "taiga-cli/0.1")
 	if c.token != "" {
 		request.Header.Set("Authorization", "Bearer "+c.token)
 	}

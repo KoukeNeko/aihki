@@ -62,7 +62,7 @@ func parseTypedItemRef(value, defaultProject, label string, kinds map[string]str
 		return ItemRef{}, fmt.Errorf("invalid %s reference %q", label, value)
 	}
 	if strings.TrimSpace(defaultProject) == "" {
-		return ItemRef{}, fmt.Errorf("no project selected; run `aihki project use <slug>` or pass --project")
+		return ItemRef{}, fmt.Errorf("no project selected; run `taiga project use <slug>` or pass --project")
 	}
 	return ItemRef{Project: strings.TrimSpace(defaultProject), Ref: ref}, nil
 }

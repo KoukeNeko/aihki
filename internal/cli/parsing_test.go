@@ -203,7 +203,7 @@ func TestParseCustomFieldValue(t *testing.T) {
 }
 
 func TestAuthRequiredIsAnAuthError(t *testing.T) {
-	err := authRequired("run `aihki auth login` first")
+	err := authRequired("run `taiga auth login` first")
 	var known *contractError
 	if !errors.As(err, &known) {
 		t.Fatalf("authRequired returned %T, want a contract error", err)

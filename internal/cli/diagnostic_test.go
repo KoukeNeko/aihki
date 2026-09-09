@@ -16,8 +16,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KoukeNeko/aihki/internal/config"
-	"github.com/KoukeNeko/aihki/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/config"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
 )
 
 func TestDoctorBundleDoesNotLeakRuntimeIdentifiersOrSecrets(t *testing.T) {

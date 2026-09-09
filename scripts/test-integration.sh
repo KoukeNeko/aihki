@@ -4,7 +4,7 @@ set -eu
 
 repository_dir=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 compose_file="$repository_dir/test/e2e/docker-compose.yml"
-project_name="aihki-e2e"
+project_name="taiga-cli-e2e"
 temporary_dir=$(mktemp -d)
 
 cleanup() {
@@ -29,9 +29,9 @@ done
 
 (
     cd "$repository_dir"
-    go build -o "$temporary_dir/aihki" ./cmd/aihki
-    AIHKI_E2E_BIN="$temporary_dir/aihki" \
-    AIHKI_E2E_URL="http://localhost:19000/taiga/api/v1/" \
-    AIHKI_E2E_HOST="http://localhost:19000/taiga/" \
+    go build -o "$temporary_dir/taiga" ./cmd/taiga
+    TAIGA_E2E_BIN="$temporary_dir/taiga" \
+    TAIGA_E2E_URL="http://localhost:19000/taiga/api/v1/" \
+    TAIGA_E2E_HOST="http://localhost:19000/taiga/" \
     go test -tags=integration -count=1 ./test/e2e
 )

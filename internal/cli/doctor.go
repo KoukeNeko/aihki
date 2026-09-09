@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/KoukeNeko/aihki/internal/credential"
-	"github.com/KoukeNeko/aihki/internal/taiga"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
 	"github.com/spf13/cobra"
 )
 

@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Remove the Aihki CLI from Windows.
+    Remove the Taiga CLI from Windows.
 
 .DESCRIPTION
     The binary and its PATH entry go by default. Configuration and stored
@@ -10,7 +10,7 @@
     make on the user's behalf.
 
 .PARAMETER InstallDir
-    Directory to remove. Defaults to %LOCALAPPDATA%\Programs\aihki.
+    Directory to remove. Defaults to %LOCALAPPDATA%\Programs\taiga.
 
 .PARAMETER Purge
     Also remove the configuration directory and credentials from Windows
@@ -20,21 +20,21 @@
     Report what would be removed and change nothing.
 
 .EXAMPLE
-    irm https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/uninstall.ps1 | iex
+    irm https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/uninstall.ps1 | iex
 
 .EXAMPLE
     .\uninstall.ps1 -Purge
 #>
 [CmdletBinding()]
 param(
-    [string]$InstallDir = (Join-Path $env:LOCALAPPDATA 'Programs\aihki'),
+    [string]$InstallDir = (Join-Path $env:LOCALAPPDATA 'Programs\taiga'),
     [switch]$Purge,
     [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
 
-$Binary = 'aihki'
+$Binary = 'taiga'
 $LegacyName = 'taiga-cli'
 
 function Remove-Target {

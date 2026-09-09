@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/KoukeNeko/aihki/internal/config"
-	"github.com/KoukeNeko/aihki/internal/credential"
-	"github.com/KoukeNeko/aihki/internal/taiga"
+	"github.com/KoukeNeko/taiga-cli/internal/config"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
@@ -221,7 +221,7 @@ func (a *App) authenticate(ctx context.Context, client *taiga.Client, target log
 		return a.loginWithToken(ctx, client, text)
 	}
 	if a.global.NoInput || !a.stdinTTY() {
-		return credential.Tokens{}, taiga.User{}, validationError("input_required", "interactive login requires a TTY; use --with-token or AIHKI_TOKEN for automation")
+		return credential.Tokens{}, taiga.User{}, validationError("input_required", "interactive login requires a TTY; use --with-token or TAIGA_TOKEN for automation")
 	}
 	a.showLoginTarget(target)
 	method := signInWithPassword
@@ -345,7 +345,7 @@ func parseTokenInput(text string) (credential.Tokens, error) {
 }
 
 func (a *App) tokenLoginHint(target loginTarget) string {
-	return "aihki auth login --url " + firstNonEmpty(target.site, target.apiURL) + " --with-token"
+	return "taiga auth login --url " + firstNonEmpty(target.site, target.apiURL) + " --with-token"
 }
 
 func (a *App) authLogoutCommand() *cobra.Command {

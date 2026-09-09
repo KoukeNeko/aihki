@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/hero.png" alt="Aihki — an independent command-line client for Taiga" width="100%">
+  <img src="assets/hero.png" alt="Taiga CLI — an independent command-line client for Taiga" width="100%">
 </p>
 
-<h1 align="center">Aihki</h1>
+<h1 align="center">Taiga CLI</h1>
 
 <p align="center">
   <strong>An independent command-line client for Taiga.</strong><br>
@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/KoukeNeko/aihki/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/KoukeNeko/aihki?style=for-the-badge&logo=github&label=RELEASE&color=2196F3"></a>
-  <a href="https://github.com/KoukeNeko/aihki/releases"><img alt="Release downloads" src="https://img.shields.io/github/downloads/KoukeNeko/aihki/total?style=for-the-badge&logo=github&label=DOWNLOADS&color=4CAF50"></a>
-  <a href="https://github.com/KoukeNeko/aihki/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/KoukeNeko/aihki/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI"></a>
+  <a href="https://github.com/KoukeNeko/taiga-cli/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/KoukeNeko/taiga-cli?style=for-the-badge&logo=github&label=RELEASE&color=2196F3"></a>
+  <a href="https://github.com/KoukeNeko/taiga-cli/releases"><img alt="Release downloads" src="https://img.shields.io/github/downloads/KoukeNeko/taiga-cli/total?style=for-the-badge&logo=github&label=DOWNLOADS&color=4CAF50"></a>
+  <a href="https://github.com/KoukeNeko/taiga-cli/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/KoukeNeko/taiga-cli/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI"></a>
   <a href="COMPATIBILITY.md"><img alt="Verified against Taiga 6.10.2" src="https://img.shields.io/badge/TAIGA-6.10.2_VERIFIED-00A5A5?style=for-the-badge"></a>
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/LICENSE-MIT-4CAF50?style=for-the-badge&logo=github"></a>
 </p>
@@ -24,18 +24,18 @@
 <p align="center">
   <a href="INSTALL.md">Install</a>
   · <a href="#getting-started">Getting started</a>
-  · <a href="https://github.com/KoukeNeko/aihki/wiki">Handbook</a>
+  · <a href="https://github.com/KoukeNeko/taiga-cli/wiki">Handbook</a>
   · <a href="CHANGELOG.md">Changelog</a>
   · <a href="COMPATIBILITY.md">Compatibility</a>
 </p>
 
 ```sh
-aihki issue list
-aihki issue create --subject "Fix token refresh" --type Bug
-aihki issue close 42 --status Closed
+taiga issue list
+taiga issue create --subject "Fix token refresh" --type Bug
+taiga issue close 42 --status Closed
 
 # The same data, for a script, a CI job, or an agent
-aihki issue view 42 --json --fields ref,subject,status,version
+taiga issue view 42 --json --fields ref,subject,status,version
 ```
 
 ```json
@@ -77,7 +77,7 @@ https://taiga.example.com/taiga/project/example-project/issue/42
 
 ### A stable surface for automation
 
-`--json` emits a `meta.contract` version, `--fields` selects columns, and `aihki schema <command>`
+`--json` emits a `meta.contract` version, `--fields` selects columns, and `taiga schema <command>`
 returns that command's input and output JSON Schema along with `safety` and `idempotency`
 annotations — enough for an agent to decide whether a command may run unattended. Exit codes are
 partitioned by failure kind, and `--dry-run` resolves and displays the mutation it would send while
@@ -106,7 +106,7 @@ on the answer. Three things follow from that:
 - **Concurrent writes are exercised, not assumed.** An end-to-end test drives one project from twelve
   accounts at once and checks that no two accepted writes ever saw the same resulting version.
 
-[Concurrency and conflicts](https://github.com/KoukeNeko/aihki/wiki/Work-Items) covers what Taiga
+[Concurrency and conflicts](https://github.com/KoukeNeko/taiga-cli/wiki/Work-Items) covers what Taiga
 refuses and what it merges.
 
 ### Many sites, many projects
@@ -116,13 +116,13 @@ also pin a profile and project to a single Git repository, stored in `.git/confi
 committed:
 
 ```sh
-aihki project use example-project --local
+taiga project use example-project --local
 ```
 
 ### Diagnosable when something breaks
 
-`aihki doctor` checks frontend discovery, the API, authentication, and the default project one by
-one. When you need help, `aihki doctor bundle` produces a report you can share without worrying:
+`taiga doctor` checks frontend discovery, the API, authentication, and the default project one by
+one. When you need help, `taiga doctor bundle` produces a report you can share without worrying:
 version information, presence booleans, and status codes only — no URLs, usernames, project names,
 or credentials — created locally and never uploaded.
 
@@ -131,18 +131,18 @@ or credentials — created locally and never uploaded.
 1. **Install.** Homebrew, on macOS and Linux:
 
    ```sh
-   brew install koukeneko/tap/aihki
+   brew install koukeneko/tap/taiga
    ```
 
    Or the install script, which verifies the download against the release checksums before it
    installs anything:
 
    ```sh
-   curl -fsSL https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.sh | sh
    ```
 
    ```powershell
-   irm https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.ps1 | iex
+   irm https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.ps1 | iex
    ```
 
    Release archives, manual checksum verification, and building from source are covered in
@@ -153,7 +153,7 @@ or credentials — created locally and never uploaded.
    goes to the OS keyring:
 
    ```sh
-   aihki auth login
+   taiga auth login
    ```
 
    To skip the first question, pass `--url` with the URL of any page inside the Taiga web app, such
@@ -162,11 +162,11 @@ or credentials — created locally and never uploaded.
    a different site with its own accounts, and pasting its address offers the hosted app instead.
 
    ```sh
-   aihki auth login --url https://taiga.example.com/taiga/ --profile company
+   taiga auth login --url https://taiga.example.com/taiga/ --profile company
    ```
 
    An account that signs in through GitHub or Google has no Taiga password. Choose that option at
-   the second question, or pass `--with-token`, and aihki takes the tokens the web app holds: sign
+   the second question, or pass `--with-token`, and taiga takes the tokens the web app holds: sign
    in on the web, open the browser's JavaScript console on that page, and run this to put them on
    the clipboard:
 
@@ -177,7 +177,7 @@ or credentials — created locally and never uploaded.
    Then paste the result at the prompt, or pipe it in:
 
    ```sh
-   pbpaste | aihki auth login --url https://tree.taiga.io/ --with-token
+   pbpaste | taiga auth login --url https://tree.taiga.io/ --with-token
    ```
 
    The refresh token in that object lets the login renew itself the way a password login does. A
@@ -185,34 +185,34 @@ or credentials — created locally and never uploaded.
    on a default Taiga 6.
 
    A token imported this way comes without a refresh token, so it stops working when the server's
-   access token expires, which is 24 hours on a default Taiga 6. `AIHKI_TOKEN` is the same thing
+   access token expires, which is 24 hours on a default Taiga 6. `TAIGA_TOKEN` is the same thing
    for a script.
 
 3. **Pick a project:**
 
    ```sh
-   aihki project list
-   aihki project use example-project
+   taiga project list
+   taiga project use example-project
    ```
 
 4. **Start working:**
 
    ```sh
-   aihki issue list
-   aihki issue create --subject "Fix token refresh" --type Bug
-   aihki issue assign 42 --to alice
-   aihki issue close 42 --status Closed
+   taiga issue list
+   taiga issue create --subject "Fix token refresh" --type Bug
+   taiga issue assign 42 --to alice
+   taiga issue close 42 --status Closed
    ```
 
 5. **Wire up automation:**
 
    ```sh
-   aihki issue view 42 --json --fields id,ref,subject,status,version --no-input
+   taiga issue view 42 --json --fields id,ref,subject,status,version --no-input
    ```
 
 The full command reference, flag documentation, and per-subsystem behaviour live in the
-[handbook wiki](https://github.com/KoukeNeko/aihki/wiki), which includes
-[worked automation recipes](https://github.com/KoukeNeko/aihki/wiki/Automation-Recipes) for CI, shell
+[handbook wiki](https://github.com/KoukeNeko/taiga-cli/wiki), which includes
+[worked automation recipes](https://github.com/KoukeNeko/taiga-cli/wiki/Automation-Recipes) for CI, shell
 scripts and agents.
 
 ## Compatibility
@@ -244,8 +244,8 @@ Resolution order, highest first:
 
 ```text
 command flag
-→ AIHKI_PROFILE / AIHKI_API_URL / AIHKI_PROJECT / AIHKI_TOKEN
-→ Git-local aihki.profile / aihki.project
+→ TAIGA_PROFILE / TAIGA_API_URL / TAIGA_PROJECT / TAIGA_TOKEN
+→ Git-local taiga.profile / taiga.project
 → current profile
 → safe defaults
 ```
@@ -312,7 +312,7 @@ Integration tests against a real Taiga server:
 make test-integration
 ```
 
-The harness uses a dedicated `aihki-e2e` Compose project on `localhost:19000`, creates its own
+The harness uses a dedicated `taiga-cli-e2e` Compose project on `localhost:19000`, creates its own
 throwaway account, project, and issues, and tears down only its own containers and volumes — it never
 touches a Taiga instance you use day to day.
 
@@ -338,7 +338,7 @@ Developer ID signature can never reproduce. Their contents are otherwise built i
 
 ## Support
 
-If Aihki is useful to you, you can support development:
+If Taiga CLI is useful to you, you can support development:
 
 <a href="https://buymeacoffee.com/doershing"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-doershing-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black"></a>
 
@@ -346,7 +346,9 @@ If Aihki is useful to you, you can support development:
 
 Taiga is a trademark of its respective owner. This project is an independent client that is not
 affiliated with, endorsed by, or sponsored by the Taiga project or its maintainers, and uses the name
-only to describe the software it works with.
+only to describe the software it works with. The Taiga team
+[confirmed on the community forum](https://community.taiga.io/t/aihki-a-cli-client-for-taiga-plus-a-naming-question/8947)
+that a small, independent third-party client describing itself with the Taiga name is not a problem.
 
 ## License
 

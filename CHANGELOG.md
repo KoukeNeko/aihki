@@ -8,6 +8,14 @@ The release workflow publishes the section matching the tag as the GitHub Releas
 
 ## [Unreleased]
 
+### Renamed back to Taiga CLI
+
+The project is **Taiga CLI** again, and the binary is `taiga`. The Taiga team confirmed on the [community forum](https://community.taiga.io/t/aihki-a-cli-client-for-taiga-plus-a-naming-question/8947) that a small, clearly independent side project describing itself with the Taiga name is not a problem; the concern they raised was the retired "TaigaNext" name, not a third-party client. The name used to describe what this client talks to now also names the client, and the `aihki` command that was awkward to type is gone.
+
+Every identifier the 0.2.0 rename introduced returns to its original. The keyring service and the configuration directory are `taiga-cli`, a repository pinned in `.git/config` reads `taiga.profile` and `taiga.project`, environment overrides use the `TAIGA_` prefix, and the OS keyring, config file and Git-local sections carry those names directly rather than through a fallback.
+
+The one-way compatibility shims that 0.2.0 added to carry Aihki-era settings forward are removed rather than kept in the other direction, so a login stored under `aihki` is not migrated; run `taiga auth login` once. **What you need to change:** `brew install koukeneko/tap/taiga` replaces the Aihki formula, release archives are named `taiga_<version>_<os>_<arch>`, and completion files are `taiga.bash`, `_taiga`, `taiga.fish` and `taiga.ps1`.
+
 ## [0.5.2] - 2026-09-08
 
 ### Changed
@@ -218,16 +226,16 @@ Or download the archive for your platform below, verify it against `SHA256SUMS`,
 
 Verified against Taiga 6.10.2 through a full Docker E2E run against a pinned image digest. Supports macOS, Linux, and Windows on `amd64` and `arm64`.
 
-[Unreleased]: https://github.com/KoukeNeko/aihki/compare/v0.5.2...HEAD
-[0.5.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.2
-[0.5.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.1
-[0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
-[0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
-[0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2
-[0.3.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.1
-[0.3.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.0
-[0.2.3]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.3
-[0.2.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.2
-[0.2.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.1
-[0.2.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.0
-[0.1.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.1.0
+[Unreleased]: https://github.com/KoukeNeko/taiga-cli/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.2
+[0.5.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.1
+[0.5.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.0
+[0.4.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.4.0
+[0.3.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.3.2
+[0.3.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.3.1
+[0.3.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.3.0
+[0.2.3]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.3
+[0.2.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.2
+[0.2.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.1
+[0.2.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.0
+[0.1.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.1.0

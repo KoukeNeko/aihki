@@ -46,8 +46,8 @@ type attempt struct {
 }
 
 func TestConcurrentPressureAgainstDocker(t *testing.T) {
-	baseURL := requiredEnv(t, "AIHKI_E2E_URL")
-	binary := requiredEnv(t, "AIHKI_E2E_BIN")
+	baseURL := requiredEnv(t, "TAIGA_E2E_URL")
+	binary := requiredEnv(t, "TAIGA_E2E_BIN")
 
 	owner := "stress_" + strconv.FormatInt(time.Now().UnixNano(), 36)
 	password := "Stress-Password-7fK2mQ9"
@@ -83,7 +83,7 @@ func TestConcurrentPressureAgainstDocker(t *testing.T) {
 				"HOME=" + home,
 				"XDG_CONFIG_HOME=" + filepath.Join(home, ".config"),
 				"TAIGA_API_URL=" + baseURL,
-				"AIHKI_TOKEN=" + worker.token,
+				"TAIGA_TOKEN=" + worker.token,
 				"TAIGA_PROJECT=" + projectSlug,
 			}
 			results[worker.index] = worker.hammer(binary, env, hotRef)

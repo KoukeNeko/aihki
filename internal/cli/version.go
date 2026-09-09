@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	buildversion "github.com/KoukeNeko/aihki/internal/version"
+	buildversion "github.com/KoukeNeko/taiga-cli/internal/version"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +25,7 @@ func (a *App) versionCommand() *cobra.Command {
 			if a.global.JSON {
 				return a.renderer().Data(info)
 			}
-			_, _ = fmt.Fprintf(a.Out, "aihki %s\ncommit: %s\nbuilt: %s\ngo: %s\nplatform: %s/%s\n", info.Version, info.Commit, info.BuildDate, info.GoVersion, info.OS, info.Arch)
+			_, _ = fmt.Fprintf(a.Out, "taiga %s\ncommit: %s\nbuilt: %s\ngo: %s\nplatform: %s/%s\n", info.Version, info.Commit, info.BuildDate, info.GoVersion, info.OS, info.Arch)
 			return nil
 		},
 	}

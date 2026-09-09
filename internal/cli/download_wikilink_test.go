@@ -84,10 +84,10 @@ func TestWikiLinkCommandLifecycle(t *testing.T) {
 	for _, args := range commands {
 		app, out, stderr, _ := testApp(t, server)
 		if code := app.Execute(context.Background(), args); code != ExitSuccess {
-			t.Fatalf("aihki %v exit=%d stderr=%s", args, code, stderr.String())
+			t.Fatalf("taiga %v exit=%d stderr=%s", args, code, stderr.String())
 		}
 		if !json.Valid(out.Bytes()) {
-			t.Fatalf("aihki %v output=%s", args, out.String())
+			t.Fatalf("taiga %v output=%s", args, out.String())
 		}
 	}
 }

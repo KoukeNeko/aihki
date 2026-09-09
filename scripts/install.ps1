@@ -14,18 +14,18 @@
     release, which never resolves to a pre-release.
 
 .PARAMETER InstallDir
-    Directory to install into. Defaults to %LOCALAPPDATA%\Programs\aihki.
+    Directory to install into. Defaults to %LOCALAPPDATA%\Programs\taiga.
 
 .EXAMPLE
     irm https://raw.githubusercontent.com/KoukeNeko/Taiga-CLI/main/scripts/install.ps1 | iex
 
 .EXAMPLE
-    .\install.ps1 -Version v0.1.0 -InstallDir C:\Tools\aihki
+    .\install.ps1 -Version v0.1.0 -InstallDir C:\Tools\taiga
 #>
 [CmdletBinding()]
 param(
     [string]$Version,
-    [string]$InstallDir = (Join-Path $env:LOCALAPPDATA 'Programs\aihki')
+    [string]$InstallDir = (Join-Path $env:LOCALAPPDATA 'Programs\taiga')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -33,7 +33,7 @@ $ErrorActionPreference = 'Stop'
 # Windows PowerShell, so it is turned off for the duration of the download.
 $ProgressPreference = 'SilentlyContinue'
 
-$Repository = 'KoukeNeko/aihki'
+$Repository = 'KoukeNeko/taiga-cli'
 $LatestReleaseUrl = "https://github.com/$Repository/releases/latest"
 $DownloadBase = "https://github.com/$Repository/releases/download"
 
@@ -108,9 +108,9 @@ if ([Net.ServicePointManager]::SecurityProtocol -notmatch 'Tls12') {
 $architecture = Get-TargetArchitecture
 $resolvedVersion = Resolve-ReleaseVersion -Requested $Version
 $numericVersion = $resolvedVersion -replace '^v', ''
-$archiveName = "aihki_${numericVersion}_windows_${architecture}.zip"
+$archiveName = "taiga_${numericVersion}_windows_${architecture}.zip"
 
-$workDir = Join-Path ([System.IO.Path]::GetTempPath()) ("aihki-install-" + [System.Guid]::NewGuid().ToString('N'))
+$workDir = Join-Path ([System.IO.Path]::GetTempPath()) ("taiga-install-" + [System.Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $workDir -Force | Out-Null
 try {
     $archivePath = Join-Path $workDir $archiveName
@@ -127,18 +127,18 @@ try {
     Assert-Checksum -ArchivePath $archivePath -ChecksumPath $checksumPath -ArchiveName $archiveName
 
     Expand-Archive -LiteralPath $archivePath -DestinationPath $workDir -Force
-    $extracted = Join-Path $workDir "aihki_${numericVersion}_windows_${architecture}\aihki.exe"
-    if (-not (Test-Path -LiteralPath $extracted)) { throw 'The archive did not contain aihki.exe.' }
+    $extracted = Join-Path $workDir "taiga_${numericVersion}_windows_${architecture}\taiga.exe"
+    if (-not (Test-Path -LiteralPath $extracted)) { throw 'The archive did not contain taiga.exe.' }
 
     New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
-    $target = Join-Path $InstallDir 'aihki.exe'
+    $target = Join-Path $InstallDir 'taiga.exe'
     Copy-Item -LiteralPath $extracted -Destination $target -Force
 
     $reported = (& $target version) | Select-Object -First 1
     Write-Host "Installed $reported to $target"
 
     Add-PathEntry -Directory $InstallDir
-    Write-Host 'Shell completion: aihki completion powershell'
+    Write-Host 'Shell completion: taiga completion powershell'
 } finally {
     Remove-Item -LiteralPath $workDir -Recurse -Force -ErrorAction SilentlyContinue
 }

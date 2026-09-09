@@ -28,9 +28,9 @@ type envelope struct {
 }
 
 func TestPhaseOneAgainstDocker(t *testing.T) {
-	baseURL := requiredEnv(t, "AIHKI_E2E_URL")
-	host := requiredEnv(t, "AIHKI_E2E_HOST")
-	binary := requiredEnv(t, "AIHKI_E2E_BIN")
+	baseURL := requiredEnv(t, "TAIGA_E2E_URL")
+	host := requiredEnv(t, "TAIGA_E2E_HOST")
+	binary := requiredEnv(t, "TAIGA_E2E_BIN")
 	home := t.TempDir()
 	username := "e2e_" + strconv.FormatInt(time.Now().UnixNano(), 36)
 	password := "E2E-Password-7fK2mQ9"
@@ -55,12 +55,12 @@ func TestPhaseOneAgainstDocker(t *testing.T) {
 		"HOME=" + home,
 		"XDG_CONFIG_HOME=" + filepath.Join(home, ".config"),
 		"TAIGA_API_URL=" + baseURL,
-		"AIHKI_TOKEN=" + token,
+		"TAIGA_TOKEN=" + token,
 		"TAIGA_PROJECT=" + projectSlug,
 	}}
 
 	runner.jsonOK("doctor", "--url", host)
-	diagnosticPath := filepath.Join(runner.dir, "aihki-diagnostics.zip")
+	diagnosticPath := filepath.Join(runner.dir, "taiga-diagnostics.zip")
 	diagnostic := runner.jsonOK("doctor", "bundle", diagnosticPath)
 	if diagnostic.Data["redacted"] != true || diagnostic.Data["uploaded"] != false {
 		t.Fatalf("diagnostic bundle result=%#v", diagnostic.Data)
@@ -131,7 +131,7 @@ func TestPhaseOneAgainstDocker(t *testing.T) {
 		t.Fatalf("role deletion=%#v", deletedRole.Data)
 	}
 	webhookSecret := "E2E-webhook-secret-must-not-leak"
-	webhook := runner.jsonOK("webhook", "create", "--name", "E2E Hook", "--url", "http://webhook.invalid/aihki", "--secret", webhookSecret)
+	webhook := runner.jsonOK("webhook", "create", "--name", "E2E Hook", "--url", "http://webhook.invalid/taiga", "--secret", webhookSecret)
 	webhookID := int64(webhook.Data["id"].(float64))
 	webhookJSON, _ := json.Marshal(webhook)
 	if bytes.Contains(webhookJSON, []byte(webhookSecret)) {
@@ -936,7 +936,7 @@ func TestPhaseOneAgainstDocker(t *testing.T) {
 	dumpURL := fmt.Sprintf("%smedia/exports/%d/%s-%s.json.gz", host, projectID, projectSlug, exportID)
 	waitForProjectDump(t, dumpURL, dumpPath)
 	importRunner := runner
-	importRunner.env = replaceEnv(runner.env, "AIHKI_TOKEN", memberToken)
+	importRunner.env = replaceEnv(runner.env, "TAIGA_TOKEN", memberToken)
 	importResult := importRunner.jsonOK("project", "import", dumpPath, "--yes")
 	if importResult.Data["status"] != "accepted" || importResult.Data["verified"] != false {
 		t.Fatalf("async project import=%#v", importResult.Data)
@@ -951,7 +951,7 @@ func TestPhaseOneAgainstDocker(t *testing.T) {
 	// The pre-rename variable has to keep authenticating a real binary, not just
 	// satisfy a unit test, because CI jobs written before the rename still export it.
 	legacyRunner := runner
-	legacyRunner.env = replaceEnv(runner.env, "AIHKI_TOKEN", "")
+	legacyRunner.env = replaceEnv(runner.env, "TAIGA_TOKEN", "")
 	legacyRunner.env = replaceEnv(legacyRunner.env, "TAIGA_TOKEN", token)
 	legacyStatus := legacyRunner.jsonOK("auth", "status", "--fields", "authenticated")
 	if legacyStatus.Data["authenticated"] != true {
@@ -959,7 +959,7 @@ func TestPhaseOneAgainstDocker(t *testing.T) {
 	}
 
 	invalidRunner := runner
-	invalidRunner.env = replaceEnv(runner.env, "AIHKI_TOKEN", "token-that-must-never-appear")
+	invalidRunner.env = replaceEnv(runner.env, "TAIGA_TOKEN", "token-that-must-never-appear")
 	stdout, stderr, code = invalidRunner.run("--verbose", "auth", "status")
 	if code != 3 {
 		t.Fatalf("invalid token exit=%d stdout=%s stderr=%s", code, stdout, stderr)
@@ -1006,14 +1006,14 @@ func (r cliRunner) jsonOKWithInput(input string, args ...string) envelope {
 	args = append([]string{"--json"}, args...)
 	stdout, stderr, code := r.runWithInput(input, args...)
 	if code != 0 {
-		r.t.Fatalf("aihki %v exit=%d stderr=%s", args, code, stderr)
+		r.t.Fatalf("taiga %v exit=%d stderr=%s", args, code, stderr)
 	}
 	if strings.TrimSpace(stderr) != "" {
-		r.t.Fatalf("aihki %v wrote stderr on success: %s", args, stderr)
+		r.t.Fatalf("taiga %v wrote stderr on success: %s", args, stderr)
 	}
 	var result envelope
 	if err := json.Unmarshal([]byte(stdout), &result); err != nil {
-		r.t.Fatalf("aihki %v returned invalid JSON: %v: %s", args, err, stdout)
+		r.t.Fatalf("taiga %v returned invalid JSON: %v: %s", args, err, stdout)
 	}
 	return result
 }
@@ -1023,14 +1023,14 @@ func (r cliRunner) jsonOK(args ...string) envelope {
 	args = append([]string{"--json"}, args...)
 	stdout, stderr, code := r.run(args...)
 	if code != 0 {
-		r.t.Fatalf("aihki %v exit=%d stderr=%s", args, code, stderr)
+		r.t.Fatalf("taiga %v exit=%d stderr=%s", args, code, stderr)
 	}
 	if strings.TrimSpace(stderr) != "" {
-		r.t.Fatalf("aihki %v wrote stderr on success: %s", args, stderr)
+		r.t.Fatalf("taiga %v wrote stderr on success: %s", args, stderr)
 	}
 	var result envelope
 	if err := json.Unmarshal([]byte(stdout), &result); err != nil {
-		r.t.Fatalf("aihki %v returned invalid JSON: %v: %s", args, err, stdout)
+		r.t.Fatalf("taiga %v returned invalid JSON: %v: %s", args, err, stdout)
 	}
 	return result
 }
@@ -1452,8 +1452,8 @@ func replaceEnv(values []string, key, value string) []string {
 // composeProject names the stack this run is talking to, so that a pressure
 // run can stand up its own alongside the ordinary suite's.
 func composeProject() string {
-	if name := os.Getenv("AIHKI_E2E_COMPOSE_PROJECT"); name != "" {
+	if name := os.Getenv("TAIGA_E2E_COMPOSE_PROJECT"); name != "" {
 		return name
 	}
-	return "aihki-e2e"
+	return "taiga-cli-e2e"
 }

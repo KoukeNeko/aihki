@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/KoukeNeko/aihki/internal/cli"
+	"github.com/KoukeNeko/taiga-cli/internal/cli"
 )
 
 func main() {

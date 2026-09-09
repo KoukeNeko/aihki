@@ -35,7 +35,7 @@ const (
 	// from that moment and nothing else will explain the next failure. It is
 	// named for the event rather than the credential so that gosec does not
 	// read a sentence about a token as a token.
-	refreshNotStoredMessage = "Taiga issued a new token but it could not be stored, so the saved credential is now stale; run `aihki auth login` again"
+	refreshNotStoredMessage = "Taiga issued a new token but it could not be stored, so the saved credential is now stale; run `taiga auth login` again"
 	maxMessageBytes         = 2000
 	maxRenderedFields       = 20
 	maxFieldDepth           = 8
@@ -288,7 +288,7 @@ func (c *Client) doJSON(ctx context.Context, method, path string, query url.Valu
 			return nil, fmt.Errorf("create request: %w", err)
 		}
 		req.Header.Set("Accept", "application/json")
-		req.Header.Set("User-Agent", "aihki/0.1")
+		req.Header.Set("User-Agent", "taiga-cli/0.1")
 		if payload != nil {
 			req.Header.Set("Content-Type", "application/json")
 		}
@@ -407,7 +407,7 @@ func (c *Client) refresh(ctx context.Context) error {
 	}
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "aihki/0.1")
+	req.Header.Set("User-Agent", "taiga-cli/0.1")
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		// The caller's context says whether the operator stopped it. The

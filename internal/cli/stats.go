@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"text/tabwriter"
 
-	"github.com/KoukeNeko/aihki/internal/taiga"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
 	"github.com/spf13/cobra"
 )
 
@@ -194,7 +194,7 @@ func (a *App) statsProject(ctx context.Context, args []string) (*taiga.Client, t
 		slug = args[0]
 	}
 	if slug == "" {
-		return nil, taiga.Project{}, validationError("missing_project", "no project selected; run `aihki project use <slug>` or pass a project slug")
+		return nil, taiga.Project{}, validationError("missing_project", "no project selected; run `taiga project use <slug>` or pass a project slug")
 	}
 	project, err := client.GetProjectBySlug(ctx, slug)
 	return client, project, err

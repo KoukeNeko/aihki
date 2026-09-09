@@ -3,7 +3,7 @@ x-back-environment: &back-environment
   POSTGRES_USER: taiga
   POSTGRES_PASSWORD: taiga-e2e-db
   POSTGRES_HOST: taiga-db
-  TAIGA_SECRET_KEY: aihki-e2e-secret-key-not-for-production
+  TAIGA_SECRET_KEY: taiga-cli-e2e-secret-key-not-for-production
   TAIGA_SITES_SCHEME: http
   TAIGA_SITES_DOMAIN: localhost:19000
   TAIGA_SUBPATH: /taiga
@@ -103,7 +103,7 @@ services:
     environment:
       RABBITMQ_USER: taiga
       RABBITMQ_PASS: taiga-e2e-rabbit
-      TAIGA_SECRET_KEY: aihki-e2e-secret-key-not-for-production
+      TAIGA_SECRET_KEY: taiga-cli-e2e-secret-key-not-for-production
     depends_on:
       taiga-events-rabbitmq:
         condition: service_started
@@ -114,7 +114,7 @@ services:
     platform: linux/amd64
     environment:
       MAX_AGE: "360"
-      SECRET_KEY: aihki-e2e-secret-key-not-for-production
+      SECRET_KEY: taiga-cli-e2e-secret-key-not-for-production
     networks: [taiga]
 
   taiga-gateway:

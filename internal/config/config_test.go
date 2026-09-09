@@ -63,93 +63,22 @@ func TestGitLocal(t *testing.T) {
 	}
 }
 
-// A profile written before the rename must survive it, or every user silently
-// loses their API URL and default project.
-func TestLoadFallsBackToTheLegacyDirectory(t *testing.T) {
+// A parse error has to name the file that was read so the fix goes to the
+// right place rather than to a path that was never touched.
+func TestLoadNamesAMalformedFile(t *testing.T) {
 	base := t.TempDir()
-	legacy := filepath.Join(base, legacyConfigDirectory)
-	if err := os.MkdirAll(legacy, 0o700); err != nil {
+	path := filepath.Join(base, configDirectory, "config.toml")
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		t.Fatal(err)
 	}
-	contents := "current_profile = \"company\"\n\n[profiles.company]\napi_url = \"https://example.test/api/v1/\"\nproject = \"demo\"\n"
-	if err := os.WriteFile(filepath.Join(legacy, "config.toml"), []byte(contents), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte("current_profile = [\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	store := NewStore(filepath.Join(base, configDirectory, "config.toml"))
-	cfg, err := store.Load()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if cfg.CurrentProfile != "company" || cfg.Profiles["company"].Project != "demo" {
-		t.Fatalf("config = %#v, want the legacy profile", cfg)
-	}
-	// Saving moves it to the current location without touching the old file.
-	if err := store.Save(cfg); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := os.Stat(filepath.Join(base, configDirectory, "config.toml")); err != nil {
-		t.Fatalf("save did not write the current location: %v", err)
-	}
-}
-
-// A parse error has to name the file that was read. When the current location
-// is absent and the legacy one is malformed, naming the current path sends
-// someone to fix a file that does not exist.
-func TestLoadNamesTheLegacyFileWhenItIsMalformed(t *testing.T) {
-	base := t.TempDir()
-	legacy := filepath.Join(base, legacyConfigDirectory, "config.toml")
-	if err := os.MkdirAll(filepath.Dir(legacy), 0o700); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(legacy, []byte("current_profile = [\n"), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	_, err := NewStore(filepath.Join(base, configDirectory, "config.toml")).Load()
+	_, err := NewStore(path).Load()
 	if err == nil {
-		t.Fatal("a malformed legacy config must not load")
+		t.Fatal("a malformed config must not load")
 	}
-	if !strings.Contains(err.Error(), legacy) {
-		t.Errorf("error = %q, want it to name %q", err, legacy)
-	}
-}
-
-func TestLoadPrefersTheCurrentDirectory(t *testing.T) {
-	base := t.TempDir()
-	for directory, profile := range map[string]string{configDirectory: "current", legacyConfigDirectory: "stale"} {
-		if err := os.MkdirAll(filepath.Join(base, directory), 0o700); err != nil {
-			t.Fatal(err)
-		}
-		body := "current_profile = \"" + profile + "\"\n"
-		if err := os.WriteFile(filepath.Join(base, directory, "config.toml"), []byte(body), 0o600); err != nil {
-			t.Fatal(err)
-		}
-	}
-	cfg, err := NewStore(filepath.Join(base, configDirectory, "config.toml")).Load()
-	if err != nil || cfg.CurrentProfile != "current" {
-		t.Fatalf("config = %#v, error = %v", cfg, err)
-	}
-}
-
-func TestGitLocalReadsTheLegacySection(t *testing.T) {
-	dir := t.TempDir()
-	if output, err := exec.Command("git", "init", "-q", dir).CombinedOutput(); err != nil {
-		t.Fatalf("git init: %v: %s", err, output)
-	}
-	set := func(key, value string) {
-		command := exec.Command("git", "config", "--local", key, value)
-		command.Dir = dir
-		if output, err := command.CombinedOutput(); err != nil {
-			t.Fatalf("git config %s: %v: %s", key, err, output)
-		}
-	}
-	set(legacyConfigSection+".project", "pinned-before-the-rename")
-	values, err := NewGitLocal(dir).Load(context.Background())
-	if err != nil || values.Project != "pinned-before-the-rename" {
-		t.Fatalf("values = %#v, error = %v", values, err)
-	}
-	set(configSection+".project", "pinned-after")
-	values, err = NewGitLocal(dir).Load(context.Background())
-	if err != nil || values.Project != "pinned-after" {
-		t.Fatalf("values = %#v, error = %v", values, err)
+	if !strings.Contains(err.Error(), path) {
+		t.Errorf("error = %q, want it to name %q", err, path)
 	}
 }

@@ -14,17 +14,17 @@ NOTARY_KEY ?=
 NOTARY_KEY_ID ?=
 NOTARY_ISSUER ?=
 LDFLAGS := -s -w \
-	-X github.com/KoukeNeko/aihki/internal/version.Version=$(VERSION) \
-	-X github.com/KoukeNeko/aihki/internal/version.Commit=$(COMMIT) \
-	-X github.com/KoukeNeko/aihki/internal/version.BuildDate=$(BUILD_DATE)
+	-X github.com/KoukeNeko/taiga-cli/internal/version.Version=$(VERSION) \
+	-X github.com/KoukeNeko/taiga-cli/internal/version.Commit=$(COMMIT) \
+	-X github.com/KoukeNeko/taiga-cli/internal/version.BuildDate=$(BUILD_DATE)
 
 build:
 	mkdir -p bin
-	go build -trimpath -ldflags "$(LDFLAGS)" -o bin/aihki ./cmd/aihki
+	go build -trimpath -ldflags "$(LDFLAGS)" -o bin/taiga ./cmd/taiga
 
 install: build
 	install -d "$(DESTDIR)$(BINDIR)"
-	install -m 0755 bin/aihki "$(DESTDIR)$(BINDIR)/aihki"
+	install -m 0755 bin/taiga "$(DESTDIR)$(BINDIR)/taiga"
 
 test:
 	go test ./...

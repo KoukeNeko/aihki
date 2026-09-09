@@ -30,7 +30,7 @@ Packager 只接受不存在或空的 output directory，避免先前版本或失
 禁止使用 lightweight 或未簽署 tag：
 
 ```sh
-git tag -s "$version" -m "Aihki $version"
+git tag -s "$version" -m "Taiga CLI $version"
 git verify-tag "$version"
 git push origin "$version"
 ```
@@ -43,7 +43,7 @@ Pre-release 使用 SemVer suffix，流程與正式版完全相同：
 
 ```sh
 version=v0.1.0-rc.1
-git tag -s "$version" -m "Aihki $version"
+git tag -s "$version" -m "Taiga CLI $version"
 git verify-tag "$version"
 git push origin "$version"
 ```
@@ -56,10 +56,10 @@ Pre-release 的 asset、checksum、SBOM 與版本 metadata 驗證方式與正式
 ## Homebrew tap
 
 正式版 tag 發布成功後，release workflow 會自動以 `scripts/render-homebrew-formula.sh` 產生 formula 並
-推送到 [`KoukeNeko/homebrew-tap`](https://github.com/KoukeNeko/homebrew-tap) 的 `Formula/aihki.rb`。
+推送到 [`KoukeNeko/homebrew-tap`](https://github.com/KoukeNeko/homebrew-tap) 的 `Formula/taiga.rb`。
 
 - 這一步需要 repository secret `HOMEBREW_TAP_TOKEN`，其權限只需對 `homebrew-tap` 有 `contents: write`。
-- Pre-release **不會**更新 tap，因為 `brew install aihki` 不應解析到 release candidate。
+- Pre-release **不會**更新 tap，因為 `brew install taiga` 不應解析到 release candidate。
 - Formula 內容與 release archive 的 SHA256SUMS 綁定，四個平台（darwin/linux × arm64/amd64）各自釘住
   自己的 archive 與雜湊。
 - 需要在不發新版的情況下修正 formula，或替既有版本補上 formula 時，手動執行 `Update Homebrew tap`
@@ -74,4 +74,4 @@ cd /tmp/taiga-release-check
 sha256sum --check SHA256SUMS
 ```
 
-至少在一個下載 archive 執行 `aihki version --json` 與 `aihki doctor --json`。若 artifact 或簽章不正確，不要以同名檔案覆寫已發布 asset；應撤回 release、調查後使用新的版本號。
+至少在一個下載 archive 執行 `taiga version --json` 與 `taiga doctor --json`。若 artifact 或簽章不正確，不要以同名檔案覆寫已發布 asset；應撤回 release、調查後使用新的版本號。

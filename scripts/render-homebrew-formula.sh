@@ -7,7 +7,7 @@
 # SHA256SUMS the release already publishes.
 set -eu
 
-REPOSITORY_URL="https://github.com/KoukeNeko/aihki"
+REPOSITORY_URL="https://github.com/KoukeNeko/taiga-cli"
 
 usage() {
     printf '%s\n' "usage: $0 <version-tag> <sha256sums-file>" >&2
@@ -39,7 +39,7 @@ esac
 }
 
 digest_for() {
-    archive="aihki_${version}_$1.tar.gz"
+    archive="taiga_${version}_$1.tar.gz"
     value=$(awk -v name="$archive" '$2 == name { print $1 }' "$checksums")
     [ -n "$value" ] || {
         printf '%s\n' "no digest for $archive in $checksums" >&2
@@ -54,7 +54,7 @@ linux_arm64=$(digest_for linux_arm64)
 linux_amd64=$(digest_for linux_amd64)
 
 cat <<FORMULA
-class Aihki < Formula
+class Taiga < Formula
   desc "Independent command-line client for Taiga"
   homepage "$REPOSITORY_URL"
   version "$version"
@@ -67,38 +67,38 @@ class Aihki < Formula
 
   on_macos do
     on_arm do
-      url "$REPOSITORY_URL/releases/download/$tag/aihki_${version}_darwin_arm64.tar.gz"
+      url "$REPOSITORY_URL/releases/download/$tag/taiga_${version}_darwin_arm64.tar.gz"
       sha256 "$darwin_arm64"
     end
     on_intel do
-      url "$REPOSITORY_URL/releases/download/$tag/aihki_${version}_darwin_amd64.tar.gz"
+      url "$REPOSITORY_URL/releases/download/$tag/taiga_${version}_darwin_amd64.tar.gz"
       sha256 "$darwin_amd64"
     end
   end
 
   on_linux do
     on_arm do
-      url "$REPOSITORY_URL/releases/download/$tag/aihki_${version}_linux_arm64.tar.gz"
+      url "$REPOSITORY_URL/releases/download/$tag/taiga_${version}_linux_arm64.tar.gz"
       sha256 "$linux_arm64"
     end
     on_intel do
-      url "$REPOSITORY_URL/releases/download/$tag/aihki_${version}_linux_amd64.tar.gz"
+      url "$REPOSITORY_URL/releases/download/$tag/taiga_${version}_linux_amd64.tar.gz"
       sha256 "$linux_amd64"
     end
   end
 
   def install
-    bin.install "aihki"
-    bash_completion.install "completions/aihki.bash" => "aihki"
-    zsh_completion.install "completions/_aihki"
-    fish_completion.install "completions/aihki.fish"
+    bin.install "taiga"
+    bash_completion.install "completions/taiga.bash" => "taiga"
+    zsh_completion.install "completions/_taiga"
+    fish_completion.install "completions/taiga.fish"
   end
 
   test do
-    assert_match version.to_s, shell_output("#{bin}/aihki version")
+    assert_match version.to_s, shell_output("#{bin}/taiga version")
     # A missing API URL is the documented validation failure, which proves the
     # binary runs and reports the structured contract rather than crashing.
-    assert_match "missing_api_url", shell_output("#{bin}/aihki --json project list 2>&1", 7)
+    assert_match "missing_api_url", shell_output("#{bin}/taiga --json project list 2>&1", 7)
   end
 end
 FORMULA

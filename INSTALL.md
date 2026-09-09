@@ -7,26 +7,26 @@
 macOS and Linux:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.ps1 | iex
 ```
 
 The script detects your platform, resolves the latest **stable** release, downloads `SHA256SUMS`, and
 **verifies the digest before installing**. A mismatch, or an archive missing from `SHA256SUMS`, aborts
 and leaves any existing installation untouched. The default location is `~/.local/bin`, or
-`%LOCALAPPDATA%\Programs\aihki` on Windows, where the directory is added to your user PATH.
+`%LOCALAPPDATA%\Programs\taiga` on Windows, where the directory is added to your user PATH.
 
 On Windows, **open a new terminal** afterwards for the PATH change to take effect.
 
 Choosing a version or location:
 
 ```sh
-AIHKI_VERSION=v0.1.0 AIHKI_INSTALL_DIR=/usr/local/bin sh install.sh
+TAIGA_VERSION=v0.1.0 TAIGA_INSTALL_DIR=/usr/local/bin sh install.sh
 ```
 
 Passing parameters on Windows means saving the script to a file first, and the PowerShell execution
@@ -35,8 +35,8 @@ unaffected because it runs a string rather than a file, but a saved script needs
 exemption:
 
 ```powershell
-irm https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.ps1 -OutFile install.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Version v0.1.0 -InstallDir C:\Tools\aihki
+irm https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.ps1 -OutFile install.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Version v0.1.0 -InstallDir C:\Tools\taiga
 ```
 
 To avoid repeating `-ExecutionPolicy Bypass`, run `Unblock-File .\install.ps1` once to clear the
@@ -45,13 +45,13 @@ download mark.
 ## Homebrew (macOS and Linux)
 
 ```sh
-brew install koukeneko/tap/aihki
+brew install koukeneko/tap/taiga
 ```
 
 Upgrading:
 
 ```sh
-brew upgrade aihki
+brew upgrade taiga
 ```
 
 The tap tracks **stable releases only** and never installs a pre-release. The formula installs the
@@ -67,12 +67,12 @@ same version:
 
 | Operating system | Architecture | Archive |
 | --- | --- | --- |
-| macOS | Intel | `aihki_<version>_darwin_amd64.tar.gz` |
-| macOS | Apple silicon | `aihki_<version>_darwin_arm64.tar.gz` |
-| Linux | x86-64 | `aihki_<version>_linux_amd64.tar.gz` |
-| Linux | ARM64 | `aihki_<version>_linux_arm64.tar.gz` |
-| Windows | x86-64 | `aihki_<version>_windows_amd64.zip` |
-| Windows | ARM64 | `aihki_<version>_windows_arm64.zip` |
+| macOS | Intel | `taiga_<version>_darwin_amd64.tar.gz` |
+| macOS | Apple silicon | `taiga_<version>_darwin_arm64.tar.gz` |
+| Linux | x86-64 | `taiga_<version>_linux_amd64.tar.gz` |
+| Linux | ARM64 | `taiga_<version>_linux_arm64.tar.gz` |
+| Windows | x86-64 | `taiga_<version>_windows_amd64.zip` |
+| Windows | ARM64 | `taiga_<version>_windows_arm64.zip` |
 
 Verifying on Linux:
 
@@ -87,7 +87,7 @@ shasum -a 256 --check SHA256SUMS
 ```
 
 On Windows PowerShell, use `Get-FileHash -Algorithm SHA256 <archive>` and compare against
-`SHA256SUMS`. Once verified, extract the archive and move `aihki` (`aihki.exe` on Windows) into a
+`SHA256SUMS`. Once verified, extract the archive and move `taiga` (`taiga.exe` on Windows) into a
 directory on your `PATH`. Every archive also carries the READMEs, the compatibility matrix, an SPDX
 SBOM, and completions for four shells.
 
@@ -97,8 +97,8 @@ Released macOS binaries are signed with a Developer ID certificate and notarized
 without any extra step. You can confirm that yourself:
 
 ```sh
-codesign --verify --strict --verbose=2 ./aihki
-spctl -a -vvv -t install ./aihki
+codesign --verify --strict --verbose=2 ./taiga
+spctl -a -vvv -t install ./taiga
 ```
 
 `spctl` reporting `accepted` with `source=Notarized Developer ID` is the expected result.
@@ -108,7 +108,7 @@ A notarization ticket cannot be stapled to a bare executable, because `stapler` 
 can still be blocked; reconnect and run it again, or clear the quarantine attribute:
 
 ```sh
-xattr -d com.apple.quarantine ./aihki
+xattr -d com.apple.quarantine ./taiga
 ```
 
 Files fetched with `curl` or `wget` are never quarantined, so this does not arise there. Either way,
@@ -118,10 +118,10 @@ verify the download against `SHA256SUMS` before running it.
 
 The `completions/` directory in each archive contains:
 
-- Bash: `aihki.bash`
-- Zsh: `_aihki`
-- Fish: `aihki.fish`
-- PowerShell: `aihki.ps1`
+- Bash: `taiga.bash`
+- Zsh: `_taiga`
+- Fish: `taiga.fish`
+- PowerShell: `taiga.ps1`
 
 The install script writes them for you when a standard completion directory already exists, and
 names each file it wrote. It never creates such a directory, since doing so would leave a stray
@@ -131,10 +131,10 @@ those files.
 They can also be generated by hand:
 
 ```sh
-aihki completion bash
-aihki completion zsh
-aihki completion fish
-aihki completion powershell
+taiga completion bash
+taiga completion zsh
+taiga completion fish
+taiga completion powershell
 ```
 
 ## Upgrading
@@ -142,11 +142,11 @@ aihki completion powershell
 1. Read that version's release notes and [COMPATIBILITY.md](COMPATIBILITY.md).
 2. Download and verify the new archive.
 3. Replace the old binary. Config files and OS keyring credentials do not need to move.
-4. Run `aihki version --json` to confirm the version, commit, and platform.
-5. Run `aihki doctor --json` to confirm the API, authentication, and default project.
+4. Run `taiga version --json` to confirm the version, commit, and platform.
+5. Run `taiga doctor --json` to confirm the API, authentication, and default project.
 
 Downgrading is the same in reverse: put back a verified older binary. If the release notes mention a
-configuration migration, back up the Aihki config file in your operating system's user config
+configuration migration, back up the Taiga CLI config file in your operating system's user config
 directory first.
 
 ## Uninstalling
@@ -154,17 +154,17 @@ directory first.
 Homebrew:
 
 ```sh
-brew uninstall aihki
+brew uninstall taiga
 ```
 
 Everything else:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/uninstall.sh | sh
+curl -fsSL https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/uninstall.sh | sh
 ```
 
 ```powershell
-irm https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/uninstall.ps1 | iex
+irm https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/uninstall.ps1 | iex
 ```
 
 By default only the binary is removed. Configuration and the credential in your OS keyring are kept,
@@ -175,8 +175,8 @@ without changing anything.
 The POSIX script detects a Homebrew installation and hands you back to `brew uninstall` rather than
 deleting files Homebrew tracks.
 
-A repository pinned with `aihki project use --local` keeps that setting in its own `.git/config`,
-which no uninstaller can find. Clear it there with `git config --local --remove-section aihki`.
+A repository pinned with `taiga project use --local` keeps that setting in its own `.git/config`,
+which no uninstaller can find. Clear it there with `git config --local --remove-section taiga`.
 
 ## Installing from source
 

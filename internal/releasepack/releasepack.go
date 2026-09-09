@@ -72,7 +72,7 @@ func Run(ctx context.Context, config Config) ([]Artifact, error) {
 	}
 	defer func() { _ = os.RemoveAll(temporary) }()
 
-	sbomName := fmt.Sprintf("aihki_%s_sbom.spdx.json", archiveVersion(config.Version))
+	sbomName := fmt.Sprintf("taiga_%s_sbom.spdx.json", archiveVersion(config.Version))
 	sbom, err := generateSBOM(ctx, config, stamp)
 	if err != nil {
 		return nil, err
@@ -143,12 +143,12 @@ func validateConfig(config *Config) error {
 }
 
 func buildTarget(ctx context.Context, config Config, target Target, stamp time.Time, temporary string, sbom []byte, completions map[string][]byte) (Artifact, error) {
-	base := fmt.Sprintf("aihki_%s_%s_%s", archiveVersion(config.Version), target.OS, target.Arch)
+	base := fmt.Sprintf("taiga_%s_%s_%s", archiveVersion(config.Version), target.OS, target.Arch)
 	stage := filepath.Join(temporary, base)
 	if err := os.MkdirAll(filepath.Join(stage, "completions"), 0o755); err != nil {
 		return Artifact{}, err
 	}
-	binaryName := "aihki"
+	binaryName := "taiga"
 	if target.OS == "windows" {
 		binaryName += ".exe"
 	}
@@ -204,8 +204,8 @@ func buildTarget(ctx context.Context, config Config, target Target, stamp time.T
 
 func buildBinary(ctx context.Context, config Config, target Target, output string) error {
 	buildDate := time.Unix(config.Epoch, 0).UTC().Format(time.RFC3339)
-	ldflags := strings.Join([]string{"-s", "-w", "-buildid=", "-X", "github.com/KoukeNeko/aihki/internal/version.Version=" + config.Version, "-X", "github.com/KoukeNeko/aihki/internal/version.Commit=" + config.Commit, "-X", "github.com/KoukeNeko/aihki/internal/version.BuildDate=" + buildDate}, " ")
-	command := exec.CommandContext(ctx, "go", "build", "-trimpath", "-buildvcs=false", "-ldflags", ldflags, "-o", output, "./cmd/aihki")
+	ldflags := strings.Join([]string{"-s", "-w", "-buildid=", "-X", "github.com/KoukeNeko/taiga-cli/internal/version.Version=" + config.Version, "-X", "github.com/KoukeNeko/taiga-cli/internal/version.Commit=" + config.Commit, "-X", "github.com/KoukeNeko/taiga-cli/internal/version.BuildDate=" + buildDate}, " ")
+	command := exec.CommandContext(ctx, "go", "build", "-trimpath", "-buildvcs=false", "-ldflags", ldflags, "-o", output, "./cmd/taiga")
 	command.Dir = config.RepoRoot
 	command.Env = withEnvironment(os.Environ(), map[string]string{"CGO_ENABLED": "0", "GOOS": target.OS, "GOARCH": target.Arch, "GOAMD64": "v1", "GOARM64": "v8.0", "GOEXPERIMENT": "", "GOFLAGS": "-mod=readonly", "SOURCE_DATE_EPOCH": fmt.Sprint(config.Epoch)})
 	if output, err := command.CombinedOutput(); err != nil {
@@ -223,7 +223,7 @@ func generateCompletions(ctx context.Context, config Config, temporary string) (
 	if err := buildBinary(ctx, config, host, binary); err != nil {
 		return nil, err
 	}
-	files := map[string]string{"bash": "aihki.bash", "zsh": "_aihki", "fish": "aihki.fish", "powershell": "aihki.ps1"}
+	files := map[string]string{"bash": "taiga.bash", "zsh": "_taiga", "fish": "taiga.fish", "powershell": "taiga.ps1"}
 	result := map[string][]byte{}
 	for shell, name := range files {
 		command := exec.CommandContext(ctx, binary, "completion", shell)
@@ -409,7 +409,7 @@ func generateSBOM(ctx context.Context, config Config, stamp time.Time) ([]byte, 
 		modules = append(modules, module)
 	}
 	sort.Slice(modules, func(i, j int) bool { return modules[i].Path < modules[j].Path })
-	document := spdxDocument{SPDXVersion: "SPDX-2.3", DataLicense: "CC0-1.0", SPDXID: "SPDXRef-DOCUMENT", Name: "aihki-" + config.Version, DocumentNamespace: fmt.Sprintf("https://github.com/KoukeNeko/aihki/releases/%s/sbom-%s", config.Version, config.Commit), CreationInfo: spdxCreationInfo{Created: stamp.Format(time.RFC3339), Creators: []string{"Tool: aihki-releasepack"}}}
+	document := spdxDocument{SPDXVersion: "SPDX-2.3", DataLicense: "CC0-1.0", SPDXID: "SPDXRef-DOCUMENT", Name: "taiga-cli-" + config.Version, DocumentNamespace: fmt.Sprintf("https://github.com/KoukeNeko/taiga-cli/releases/%s/sbom-%s", config.Version, config.Commit), CreationInfo: spdxCreationInfo{Created: stamp.Format(time.RFC3339), Creators: []string{"Tool: taiga-cli-releasepack"}}}
 	rootID := ""
 	for _, module := range modules {
 		version := module.Version

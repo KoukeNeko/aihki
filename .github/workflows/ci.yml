@@ -82,7 +82,7 @@ jobs:
         with:
           go-version: "1.26.x"
           cache: true
-      - run: go build ./cmd/aihki
+      - run: go build ./cmd/taiga
 
   release-package:
     runs-on: ubuntu-latest
@@ -98,16 +98,16 @@ jobs:
         run: |
           cd dist/v0.0.0-ci
           sha256sum --check SHA256SUMS
-          tar -xzf aihki_0.0.0-ci_linux_amd64.tar.gz
-          ./aihki_0.0.0-ci_linux_amd64/aihki version --json | grep '"version":"v0.0.0-ci"'
-          grep '"spdxVersion": "SPDX-2.3"' aihki_0.0.0-ci_sbom.spdx.json
+          tar -xzf taiga_0.0.0-ci_linux_amd64.tar.gz
+          ./taiga_0.0.0-ci_linux_amd64/taiga version --json | grep '"version":"v0.0.0-ci"'
+          grep '"spdxVersion": "SPDX-2.3"' taiga_0.0.0-ci_sbom.spdx.json
       - name: Verify reproducible Linux archive
         run: |
           go run ./cmd/releasepack \
             --version v0.0.0-ci \
             --commit "$GITHUB_SHA" \
             --source-date-epoch "$(git show -s --format=%ct HEAD)" \
-            --output /tmp/aihki-repro \
+            --output /tmp/taiga-repro \
             --targets linux/amd64
-          cmp dist/v0.0.0-ci/aihki_0.0.0-ci_linux_amd64.tar.gz /tmp/aihki-repro/aihki_0.0.0-ci_linux_amd64.tar.gz
-          cmp dist/v0.0.0-ci/aihki_0.0.0-ci_sbom.spdx.json /tmp/aihki-repro/aihki_0.0.0-ci_sbom.spdx.json
+          cmp dist/v0.0.0-ci/taiga_0.0.0-ci_linux_amd64.tar.gz /tmp/taiga-repro/taiga_0.0.0-ci_linux_amd64.tar.gz
+          cmp dist/v0.0.0-ci/taiga_0.0.0-ci_sbom.spdx.json /tmp/taiga-repro/taiga_0.0.0-ci_sbom.spdx.json

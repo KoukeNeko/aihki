@@ -94,22 +94,22 @@ jobs:
         run: |
           cd "dist/$GITHUB_REF_NAME"
           shasum -a 256 --check SHA256SUMS
-          linux_dir="aihki_${GITHUB_REF_NAME#v}_linux_amd64"
-          darwin_dir="aihki_${GITHUB_REF_NAME#v}_darwin_arm64"
+          linux_dir="taiga_${GITHUB_REF_NAME#v}_linux_amd64"
+          darwin_dir="taiga_${GITHUB_REF_NAME#v}_darwin_arm64"
           tar -xzf "$linux_dir.tar.gz"
           tar -xzf "$darwin_dir.tar.gz"
           # This runner is macOS, so only the darwin binary can be executed.
           # The Linux archive is checked structurally instead.
-          file "./$linux_dir/aihki" | grep -q "ELF 64-bit"
-          "./$darwin_dir/aihki" version --json | grep "\"version\":\"$GITHUB_REF_NAME\""
+          file "./$linux_dir/taiga" | grep -q "ELF 64-bit"
+          "./$darwin_dir/taiga" version --json | grep "\"version\":\"$GITHUB_REF_NAME\""
           # Prove the shipped macOS binary really carries a notarized
           # Developer ID signature rather than an ad-hoc or missing one.
-          codesign --verify --strict --verbose=2 "./$darwin_dir/aihki"
-          codesign -dvv "./$darwin_dir/aihki" 2>&1 | grep "^Authority=Developer ID Application"
+          codesign --verify --strict --verbose=2 "./$darwin_dir/taiga"
+          codesign -dvv "./$darwin_dir/taiga" 2>&1 | grep "^Authority=Developer ID Application"
           # spctl resolves the notarization ticket online, so absorb the brief
           # propagation lag rather than burning a tag that cannot be reused.
           for attempt in 1 2 3 4 5; do
-            if spctl -a -vvv -t install "./$darwin_dir/aihki"; then
+            if spctl -a -vvv -t install "./$darwin_dir/taiga"; then
               break
             fi
             test "$attempt" -lt 5 || (echo "notarization ticket never became visible to Gatekeeper" >&2; exit 1)
@@ -133,28 +133,28 @@ jobs:
             --title "$GITHUB_REF_NAME" \
             $prerelease
       - name: Update the Homebrew tap
-        # Only stable releases reach the tap: `brew install aihki` must never
+        # Only stable releases reach the tap: `brew install taiga` must never
         # resolve to a release candidate.
         if: ${{ !contains(github.ref_name, '-') }}
         env:
           TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           test -n "$TAP_TOKEN" || (echo "HOMEBREW_TAP_TOKEN is required to update the tap" >&2; exit 1)
-          formula="$RUNNER_TEMP/aihki.rb"
+          formula="$RUNNER_TEMP/taiga.rb"
           ./scripts/render-homebrew-formula.sh "$GITHUB_REF_NAME" "dist/$GITHUB_REF_NAME/SHA256SUMS" > "$formula"
           tap="$RUNNER_TEMP/homebrew-tap"
           git clone --depth 1 "https://x-access-token:$TAP_TOKEN@github.com/KoukeNeko/homebrew-tap.git" "$tap" 2>/dev/null
           mkdir -p "$tap/Formula"
-          cp "$formula" "$tap/Formula/aihki.rb"
+          cp "$formula" "$tap/Formula/taiga.rb"
           cd "$tap"
-          git add Formula/aihki.rb
+          git add Formula/taiga.rb
           if git diff --cached --quiet; then
             echo "The tap already carries this formula."
             exit 0
           fi
           git -c user.name="github-actions[bot]" \
               -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-              commit -m "aihki $GITHUB_REF_NAME"
+              commit -m "taiga $GITHUB_REF_NAME"
           git push
           echo "Updated koukeneko/tap to $GITHUB_REF_NAME."
       - name: Remove signing material

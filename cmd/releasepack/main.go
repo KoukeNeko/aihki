@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/KoukeNeko/aihki/internal/releasepack"
+	"github.com/KoukeNeko/taiga-cli/internal/releasepack"
 )
 
 func main() {

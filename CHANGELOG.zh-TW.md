@@ -8,6 +8,14 @@ Release workflow 會把對應版本的段落與英文版 [CHANGELOG.md](CHANGELO
 
 ## [未發布]
 
+### 改回 Taiga CLI
+
+專案重新命名回 **Taiga CLI**，執行檔為 `taiga`。Taiga 團隊在[社群論壇](https://community.taiga.io/t/aihki-a-cli-client-for-taiga-plus-a-naming-question/8947)上確認：一個明確獨立、規模不大的 side project 以 Taiga 之名描述自己並不成問題；他們在意的是已退役的「TaigaNext」名稱，而不是第三方 client。用來描述此 client 連線對象的名稱，如今也成為 client 自己的名稱，難打的 `aihki` 指令就此走入歷史。
+
+0.2.0 改名時引入的每個識別字都還原成原本的樣子。keyring service 與設定目錄為 `taiga-cli`，在 `.git/config` 裡綁定的 repository 讀取 `taiga.profile` 與 `taiga.project`，環境變數覆寫使用 `TAIGA_` 前綴，而 OS keyring、設定檔與 Git-local 段都直接使用這些名稱，不再經過 fallback。
+
+0.2.0 為了把 Aihki 時期的設定往前搬而加入的單向相容轉換已移除，不再往另一個方向保留，因此在 `aihki` 底下儲存的登入不會被搬移；請執行一次 `taiga auth login`。**你需要調整的地方：** 以 `brew install koukeneko/tap/taiga` 取代 Aihki 的 formula，release archive 命名為 `taiga_<version>_<os>_<arch>`，completion 檔為 `taiga.bash`、`_taiga`、`taiga.fish` 與 `taiga.ps1`。
+
 ## [0.5.2] - 2026-09-08
 
 ### 變更
@@ -218,16 +226,16 @@ brew install koukeneko/tap/aihki
 
 已針對 Taiga 6.10.2 以固定 image digest 執行完整 Docker E2E 驗證。支援 macOS、Linux、Windows 的 `amd64` 與 `arm64`。
 
-[未發布]: https://github.com/KoukeNeko/aihki/compare/v0.5.2...HEAD
-[0.5.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.2
-[0.5.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.1
-[0.5.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.5.0
-[0.4.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.4.0
-[0.3.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.2
-[0.3.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.1
-[0.3.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.3.0
-[0.2.3]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.3
-[0.2.2]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.2
-[0.2.1]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.1
-[0.2.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.2.0
-[0.1.0]: https://github.com/KoukeNeko/aihki/releases/tag/v0.1.0
+[未發布]: https://github.com/KoukeNeko/taiga-cli/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.2
+[0.5.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.1
+[0.5.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.5.0
+[0.4.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.4.0
+[0.3.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.3.2
+[0.3.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.3.1
+[0.3.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.3.0
+[0.2.3]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.3
+[0.2.2]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.2
+[0.2.1]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.1
+[0.2.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.2.0
+[0.1.0]: https://github.com/KoukeNeko/taiga-cli/releases/tag/v0.1.0

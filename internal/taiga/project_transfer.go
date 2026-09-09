@@ -68,7 +68,7 @@ func (c *Client) ImportProjectDump(ctx context.Context, name, contentType string
 	}
 	request.Header.Set("Accept", "application/json")
 	request.Header.Set("Content-Type", multipartWriter.FormDataContentType())
-	request.Header.Set("User-Agent", "aihki/0.1")
+	request.Header.Set("User-Agent", "taiga-cli/0.1")
 	if c.token != "" {
 		request.Header.Set("Authorization", "Bearer "+c.token)
 	}

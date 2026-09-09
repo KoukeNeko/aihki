@@ -8,12 +8,7 @@ import (
 	keyring "github.com/zalando/go-keyring"
 )
 
-const serviceName = "aihki"
-
-// legacyServiceName is the keyring service this tool used before it was
-// renamed. Reading through to it keeps an existing login working rather than
-// silently demanding that everyone authenticate again.
-const legacyServiceName = "taiga-cli"
+const serviceName = "taiga-cli"
 
 var ErrNotFound = errors.New("credential not found")
 
@@ -61,7 +56,7 @@ func Account(profile, apiURL string) string { return profile + "|" + apiURL }
 func (s *KeyringStore) Get(account string) (Tokens, error) {
 	value, err := s.backend.Get(serviceName, account)
 	if errors.Is(err, keyring.ErrNotFound) {
-		return s.adopt(account)
+		return Tokens{}, ErrNotFound
 	}
 	if err != nil {
 		return Tokens{}, fmt.Errorf("read OS keyring: %w", err)
@@ -70,25 +65,6 @@ func (s *KeyringStore) Get(account string) (Tokens, error) {
 	if err := json.Unmarshal([]byte(value), &tokens); err != nil {
 		return Tokens{}, fmt.Errorf("decode OS keyring entry: %w", err)
 	}
-	return tokens, nil
-}
-
-// adopt moves a credential stored under the pre-rename service across, so the
-// migration happens once and invisibly. A failure to write the new entry is not
-// fatal: returning the credential still lets the command succeed.
-func (s *KeyringStore) adopt(account string) (Tokens, error) {
-	value, err := s.backend.Get(legacyServiceName, account)
-	if errors.Is(err, keyring.ErrNotFound) {
-		return Tokens{}, ErrNotFound
-	}
-	if err != nil {
-		return Tokens{}, ErrNotFound
-	}
-	var tokens Tokens
-	if err := json.Unmarshal([]byte(value), &tokens); err != nil {
-		return Tokens{}, ErrNotFound
-	}
-	_ = s.backend.Set(serviceName, account, value)
 	return tokens, nil
 }
 
@@ -104,7 +80,6 @@ func (s *KeyringStore) Set(account string, tokens Tokens) error {
 }
 
 func (s *KeyringStore) Delete(account string) error {
-	_ = s.backend.Delete(legacyServiceName, account)
 	err := s.backend.Delete(serviceName, account)
 	if errors.Is(err, keyring.ErrNotFound) {
 		return nil

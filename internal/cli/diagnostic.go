@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KoukeNeko/aihki/internal/config"
-	"github.com/KoukeNeko/aihki/internal/taiga"
-	buildversion "github.com/KoukeNeko/aihki/internal/version"
+	"github.com/KoukeNeko/taiga-cli/internal/config"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
+	buildversion "github.com/KoukeNeko/taiga-cli/internal/version"
 	"github.com/spf13/cobra"
 )
 

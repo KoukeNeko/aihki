@@ -109,7 +109,7 @@ func (c *Client) CreateAttachment(ctx context.Context, resource string, projectI
 	}
 	request.Header.Set("Accept", "application/json")
 	request.Header.Set("Content-Type", multipartWriter.FormDataContentType())
-	request.Header.Set("User-Agent", "aihki/0.1")
+	request.Header.Set("User-Agent", "taiga-cli/0.1")
 	if c.token != "" {
 		request.Header.Set("Authorization", "Bearer "+c.token)
 	}
@@ -194,7 +194,7 @@ func (c *Client) DownloadAttachment(ctx context.Context, attachment Attachment, 
 		return AttachmentDownload{}, err
 	}
 	request.Header.Set("Accept", "application/octet-stream")
-	request.Header.Set("User-Agent", "aihki/0.1")
+	request.Header.Set("User-Agent", "taiga-cli/0.1")
 	started := time.Now()
 	response, err := c.httpClient.Do(request)
 	if err != nil {

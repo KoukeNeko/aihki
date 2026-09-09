@@ -55,8 +55,8 @@ jobs:
             exit 1
           fi
           gh release download "$VERSION" --pattern SHA256SUMS --dir "$RUNNER_TEMP"
-          ./scripts/render-homebrew-formula.sh "$VERSION" "$RUNNER_TEMP/SHA256SUMS" > "$RUNNER_TEMP/aihki.rb"
-          cat "$RUNNER_TEMP/aihki.rb"
+          ./scripts/render-homebrew-formula.sh "$VERSION" "$RUNNER_TEMP/SHA256SUMS" > "$RUNNER_TEMP/taiga.rb"
+          cat "$RUNNER_TEMP/taiga.rb"
       - name: Push the formula to the tap
         if: ${{ inputs.version != '' }}
         env:
@@ -66,16 +66,16 @@ jobs:
           tap="$RUNNER_TEMP/homebrew-tap"
           git clone --depth 1 "https://x-access-token:$TAP_TOKEN@github.com/KoukeNeko/homebrew-tap.git" "$tap" 2>/dev/null
           mkdir -p "$tap/Formula"
-          cp "$RUNNER_TEMP/aihki.rb" "$tap/Formula/aihki.rb"
+          cp "$RUNNER_TEMP/taiga.rb" "$tap/Formula/taiga.rb"
           cd "$tap"
-          git add Formula/aihki.rb
+          git add Formula/taiga.rb
           if git diff --cached --quiet; then
             echo "The tap already carries this formula."
             exit 0
           fi
           git -c user.name="github-actions[bot]" \
               -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-              commit -m "aihki $VERSION"
+              commit -m "taiga $VERSION"
           git push
           echo "Updated koukeneko/tap to $VERSION."
       - name: Remove the tap checkout

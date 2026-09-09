@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KoukeNeko/aihki/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
 )
 
 func TestProjectExportReportsAcceptedAsyncWork(t *testing.T) {

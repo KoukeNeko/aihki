@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/hero.png" alt="Aihki — an independent command-line client for Taiga" width="100%">
+  <img src="assets/hero.png" alt="Taiga CLI — an independent command-line client for Taiga" width="100%">
 </p>
 
-<h1 align="center">Aihki</h1>
+<h1 align="center">Taiga CLI</h1>
 
 <p align="center">
   <strong>獨立的 Taiga 命令列客戶端。</strong><br>
@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/KoukeNeko/aihki/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/KoukeNeko/aihki?style=for-the-badge&logo=github&label=RELEASE&color=2196F3"></a>
-  <a href="https://github.com/KoukeNeko/aihki/releases"><img alt="Release downloads" src="https://img.shields.io/github/downloads/KoukeNeko/aihki/total?style=for-the-badge&logo=github&label=DOWNLOADS&color=4CAF50"></a>
-  <a href="https://github.com/KoukeNeko/aihki/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/KoukeNeko/aihki/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI"></a>
+  <a href="https://github.com/KoukeNeko/taiga-cli/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/KoukeNeko/taiga-cli?style=for-the-badge&logo=github&label=RELEASE&color=2196F3"></a>
+  <a href="https://github.com/KoukeNeko/taiga-cli/releases"><img alt="Release downloads" src="https://img.shields.io/github/downloads/KoukeNeko/taiga-cli/total?style=for-the-badge&logo=github&label=DOWNLOADS&color=4CAF50"></a>
+  <a href="https://github.com/KoukeNeko/taiga-cli/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/KoukeNeko/taiga-cli/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI"></a>
   <a href="COMPATIBILITY.zh-TW.md"><img alt="Verified against Taiga 6.10.2" src="https://img.shields.io/badge/TAIGA-6.10.2_VERIFIED-00A5A5?style=for-the-badge"></a>
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/LICENSE-MIT-4CAF50?style=for-the-badge&logo=github"></a>
 </p>
@@ -24,18 +24,18 @@
 <p align="center">
   <a href="INSTALL.zh-TW.md">安裝</a>
   · <a href="#快速開始">快速開始</a>
-  · <a href="https://github.com/KoukeNeko/aihki/wiki">使用手冊</a>
+  · <a href="https://github.com/KoukeNeko/taiga-cli/wiki">使用手冊</a>
   · <a href="CHANGELOG.zh-TW.md">版本紀錄</a>
   · <a href="COMPATIBILITY.zh-TW.md">相容性</a>
 </p>
 
 ```sh
-aihki issue list
-aihki issue create --subject "Fix token refresh" --type Bug
-aihki issue close 42 --status Closed
+taiga issue list
+taiga issue create --subject "Fix token refresh" --type Bug
+taiga issue close 42 --status Closed
 
 # 同一份資料，給 script、CI job 或 agent
-aihki issue view 42 --json --fields ref,subject,status,version
+taiga issue view 42 --json --fields ref,subject,status,version
 ```
 
 ```json
@@ -73,7 +73,7 @@ https://taiga.example.com/taiga/project/example-project/issue/42
 
 ### 給自動化的穩定介面
 
-`--json` 輸出 `meta.contract` 版本號，`--fields` 挑選欄位，`aihki schema <command>` 給出該指令的
+`--json` 輸出 `meta.contract` 版本號，`--fields` 挑選欄位，`taiga schema <command>` 給出該指令的
 input/output JSON Schema 與 safety/idempotency 標註 —— agent 可以據此判斷一個指令能不能自動執行。
 Exit code 依錯誤種類固定分流，`--dry-run` 會完整解析並顯示將送出的變更，但保證不發出任何寫入請求。
 
@@ -94,7 +94,7 @@ token 的 auth code 與 ownership transfer token 都不會出現在任何輸出�
 - **並行寫入是實測過的，不是假設的。** 一份 end-to-end 測試讓十二個帳號同時操作同一個專案，檢查任何兩次被
   接受的寫入都不會看到相同的版本號。
 
-[並行與衝突](https://github.com/KoukeNeko/aihki/wiki/Work-Items-zh-TW) 說明 Taiga 會拒絕什麼、會合併什麼。
+[並行與衝突](https://github.com/KoukeNeko/taiga-cli/wiki/Work-Items-zh-TW) 說明 Taiga 會拒絕什麼、會合併什麼。
 
 ### 多站台與多專案
 
@@ -102,13 +102,13 @@ Profile 讓你在不同 Taiga 站台之間切換，各自記住 API URL 與預�
 單一 Git repository 上，存進 `.git/config` 而不會被 commit：
 
 ```sh
-aihki project use example-project --local
+taiga project use example-project --local
 ```
 
 ### 出事的時候查得出來
 
-`aihki doctor` 逐項檢查 frontend discovery、API、authentication 與預設專案。需要求助時，
-`aihki doctor bundle` 產生一份可以安心分享的診斷包 —— 只有版本資訊、設定「是否存在」的布林值與
+`taiga doctor` 逐項檢查 frontend discovery、API、authentication 與預設專案。需要求助時，
+`taiga doctor bundle` 產生一份可以安心分享的診斷包 —— 只有版本資訊、設定「是否存在」的布林值與
 狀態碼，不含任何 URL、使用者名稱、專案名稱或憑證，而且只在本機建立、不會自動上傳。
 
 ## 快速開始
@@ -116,17 +116,17 @@ aihki project use example-project --local
 1. **安裝。** macOS 與 Linux 用 Homebrew：
 
    ```sh
-   brew install koukeneko/tap/aihki
+   brew install koukeneko/tap/taiga
    ```
 
    或用安裝腳本，它會先核對 release checksum 才安裝：
 
    ```sh
-   curl -fsSL https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.sh | sh
+   curl -fsSL https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.sh | sh
    ```
 
    ```powershell
-   irm https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/install.ps1 | iex
+   irm https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/install.ps1 | iex
    ```
 
    Release archive、手動驗證 checksum 與從原始碼建置見 [INSTALL.zh-TW.md](INSTALL.zh-TW.md)。
@@ -136,7 +136,7 @@ aihki project use example-project --local
    token 會存進 OS keyring：
 
    ```sh
-   aihki auth login
+   taiga auth login
    ```
 
    要跳過第一個問題，用 `--url` 貼上 Taiga 網頁應用裡任何一頁的網址，例如專案或 backlog 頁面；填 API 的位址
@@ -144,10 +144,10 @@ aihki project use example-project --local
    是論壇，帳號系統不同，貼了它的網址時會改問你要不要用託管版。
 
    ```sh
-   aihki auth login --url https://taiga.example.com/taiga/ --profile company
+   taiga auth login --url https://taiga.example.com/taiga/ --profile company
    ```
 
-   用 GitHub 或 Google 登入的帳號沒有 Taiga 密碼。在第二個問題選那個選項，或直接加 `--with-token`，aihki
+   用 GitHub 或 Google 登入的帳號沒有 Taiga 密碼。在第二個問題選那個選項，或直接加 `--with-token`，taiga
    會改用網頁應用持有的 token：先在網頁登入，在那個分頁打開瀏覽器的 JavaScript console，執行這行把兩個
    token 一起放進剪貼簿：
 
@@ -158,40 +158,40 @@ aihki project use example-project --local
    然後在提示處貼上，或用 pipe 傳入：
 
    ```sh
-   pbpaste | aihki auth login --url https://tree.taiga.io/ --with-token
+   pbpaste | taiga auth login --url https://tree.taiga.io/ --with-token
    ```
 
    物件裡的 refresh token 讓這個登入能像密碼登入一樣自動更新。只貼 token 本身也可以，但登入只會維持到該
    token 過期，預設的 Taiga 6 是 24 小時。
 
    這樣匯入的 token 沒有附帶 refresh token，會在伺服器的 access token 過期時失效，預設的 Taiga 6 是 24 小時。
-   `AIHKI_TOKEN` 是給 script 用的同一件事。
+   `TAIGA_TOKEN` 是給 script 用的同一件事。
 
 3. **選定專案**：
 
    ```sh
-   aihki project list
-   aihki project use example-project
+   taiga project list
+   taiga project use example-project
    ```
 
 4. **開始操作**：
 
    ```sh
-   aihki issue list
-   aihki issue create --subject "Fix token refresh" --type Bug
-   aihki issue assign 42 --to alice
-   aihki issue close 42 --status Closed
+   taiga issue list
+   taiga issue create --subject "Fix token refresh" --type Bug
+   taiga issue assign 42 --to alice
+   taiga issue close 42 --status Closed
    ```
 
 5. **接上自動化**：
 
    ```sh
-   aihki issue view 42 --json --fields id,ref,subject,status,version --no-input
+   taiga issue view 42 --json --fields id,ref,subject,status,version --no-input
    ```
 
 完整的指令參考、旗標說明與各子系統的行為細節，見
-[使用手冊 Wiki](https://github.com/KoukeNeko/aihki/wiki)，其中包含給 CI、shell 腳本與 agent 的
-[自動化實例](https://github.com/KoukeNeko/aihki/wiki/Automation-Recipes-zh-TW)。
+[使用手冊 Wiki](https://github.com/KoukeNeko/taiga-cli/wiki)，其中包含給 CI、shell 腳本與 agent 的
+[自動化實例](https://github.com/KoukeNeko/taiga-cli/wiki/Automation-Recipes-zh-TW)。
 
 ## 相容性
 
@@ -221,8 +221,8 @@ project = "example-project"
 
 ```text
 command flag
-→ AIHKI_PROFILE / AIHKI_API_URL / AIHKI_PROJECT / AIHKI_TOKEN
-→ Git-local aihki.profile / aihki.project
+→ TAIGA_PROFILE / TAIGA_API_URL / TAIGA_PROJECT / TAIGA_TOKEN
+→ Git-local taiga.profile / taiga.project
 → current profile
 → safe defaults
 ```
@@ -286,7 +286,7 @@ make lint
 make test-integration
 ```
 
-Integration harness 使用獨立的 `aihki-e2e` Compose project 與 `localhost:19000`，自行建立臨時帳號、
+Integration harness 使用獨立的 `taiga-cli-e2e` Compose project 與 `localhost:19000`，自行建立臨時帳號、
 專案與 Issue，結束後只清除自己的 container 與 volume，不會動到日常使用的 Taiga 實例。
 
 重建跨平台 release artifacts：
@@ -312,14 +312,14 @@ macOS 是例外：notarization 要求 Apple 簽發的安全時間戳，因此 De
 
 ## 贊助
 
-如果 Aihki 對你有幫助，可以考慮贊助開發者:
+如果 Taiga CLI 對你有幫助，可以考慮贊助開發者:
 
 <a href="https://buymeacoffee.com/doershing"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-doershing-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black"></a>
 
 ## 商標
 
 Taiga 為其各自權利人之商標。本專案是獨立的客戶端，與 Taiga 專案及其維護者並無隸屬關係，未經其背書或
-贊助；使用該名稱僅為描述本工具所搭配的軟體。
+贊助；使用該名稱僅為描述本工具所搭配的軟體。Taiga 團隊已在[社群論壇](https://community.taiga.io/t/aihki-a-cli-client-for-taiga-plus-a-naming-question/8947)上確認，一個規模不大、獨立的第三方客戶端以此方式命名並無問題。
 
 ## License
 

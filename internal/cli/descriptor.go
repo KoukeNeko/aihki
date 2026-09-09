@@ -3,8 +3,8 @@ package cli
 import (
 	"sort"
 
-	"github.com/KoukeNeko/aihki/internal/taiga"
-	buildversion "github.com/KoukeNeko/aihki/internal/version"
+	"github.com/KoukeNeko/taiga-cli/internal/taiga"
+	buildversion "github.com/KoukeNeko/taiga-cli/internal/version"
 )
 
 const jsonSchemaDraft = "https://json-schema.org/draft/2020-12/schema"

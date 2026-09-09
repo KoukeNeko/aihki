@@ -10,12 +10,7 @@ import (
 
 var ErrNotGitRepository = errors.New("current directory is not inside a Git repository")
 
-const (
-	configSection = "aihki"
-	// legacyConfigSection is the Git config section this tool wrote before it
-	// was renamed. Repositories pinned with the old name keep working.
-	legacyConfigSection = "taiga"
-)
+const configSection = "taiga"
 
 type GitLocal struct {
 	dir string
@@ -38,11 +33,11 @@ func (g *GitLocal) Load(ctx context.Context) (LocalValues, error) {
 	if !g.Available(ctx) {
 		return LocalValues{}, ErrNotGitRepository
 	}
-	profile, err := g.resolve(ctx, "profile")
+	profile, err := g.get(ctx, configSection+".profile")
 	if err != nil {
 		return LocalValues{}, err
 	}
-	project, err := g.resolve(ctx, "project")
+	project, err := g.get(ctx, configSection+".project")
 	if err != nil {
 		return LocalValues{}, err
 	}
@@ -63,16 +58,6 @@ func (g *GitLocal) Set(ctx context.Context, key, value string) error {
 		return fmt.Errorf("write Git-local config: %w: %s", err, strings.TrimSpace(string(output)))
 	}
 	return nil
-}
-
-// resolve prefers the current section and falls back to the pre-rename one, so
-// a repository pinned before the rename still selects its project.
-func (g *GitLocal) resolve(ctx context.Context, key string) (string, error) {
-	value, err := g.get(ctx, configSection+"."+key)
-	if err != nil || value != "" {
-		return value, err
-	}
-	return g.get(ctx, legacyConfigSection+"."+key)
 }
 
 func (g *GitLocal) get(ctx context.Context, key string) (string, error) {

@@ -37,7 +37,7 @@ func ParseWikiRef(value, defaultProject string) (WikiRef, error) {
 		return WikiRef{}, fmt.Errorf("invalid wiki slug %q", value)
 	}
 	if strings.TrimSpace(defaultProject) == "" {
-		return WikiRef{}, fmt.Errorf("no project selected; run `aihki project use <slug>` or pass --project")
+		return WikiRef{}, fmt.Errorf("no project selected; run `taiga project use <slug>` or pass --project")
 	}
 	return WikiRef{Project: strings.TrimSpace(defaultProject), Slug: value}, nil
 }

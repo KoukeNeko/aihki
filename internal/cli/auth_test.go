@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KoukeNeko/aihki/internal/config"
-	"github.com/KoukeNeko/aihki/internal/credential"
+	"github.com/KoukeNeko/taiga-cli/internal/config"
+	"github.com/KoukeNeko/taiga-cli/internal/credential"
 )
 
 // A script that forgot the URL is told what to pass, not asked a question it
@@ -260,8 +260,8 @@ func TestLoginDoesNotAskWhenTheAPIURLWasGiven(t *testing.T) {
 	const given = "https://given.invalid/api/v1/"
 	for name, prepare := range map[string]func(*App){
 		"--api-url": func(app *App) { app.global.APIURL = given },
-		"AIHKI_API_URL": func(app *App) {
-			app.Getenv = func(name string) string { return map[string]string{"AIHKI_API_URL": given}[name] }
+		"TAIGA_API_URL": func(app *App) {
+			app.Getenv = func(name string) string { return map[string]string{"TAIGA_API_URL": given}[name] }
 		},
 	} {
 		t.Run(name, func(t *testing.T) {

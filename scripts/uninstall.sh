@@ -1,25 +1,25 @@
 #!/usr/bin/env sh
-# Remove the Aihki CLI from macOS or Linux.
+# Remove the Taiga CLI from macOS or Linux.
 #
 # The binary goes by default. Configuration and stored credentials stay unless
 # --purge is given, because uninstalling is often one step of an upgrade and
 # silently discarding a login would be a poor trade to make on the user's
 # behalf.
 #
-#   curl -fsSL https://raw.githubusercontent.com/KoukeNeko/aihki/main/scripts/uninstall.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/KoukeNeko/taiga-cli/main/scripts/uninstall.sh | sh
 #
 # Options:
 #   --purge      also remove configuration, the completion cache and credentials
 #   --dry-run    report what would be removed and change nothing
 #
 # Environment:
-#   AIHKI_INSTALL_DIR  directory to remove the binary from (default: $HOME/.local/bin)
+#   TAIGA_INSTALL_DIR  directory to remove the binary from (default: $HOME/.local/bin)
 set -eu
 
-BINARY=aihki
+BINARY=taiga
 LEGACY_KEYRING_SERVICE=taiga-cli
 
-install_dir=${AIHKI_INSTALL_DIR:-$HOME/.local/bin}
+install_dir=${TAIGA_INSTALL_DIR:-$HOME/.local/bin}
 purge=no
 dry_run=no
 
@@ -53,7 +53,7 @@ remove() {
     log "removed $target"
 }
 
-# Deleting files Homebrew owns would leave its metadata claiming aihki is still
+# Deleting files Homebrew owns would leave its metadata claiming taiga is still
 # installed, so hand the user back to brew rather than corrupting its state.
 check_homebrew() {
     command -v brew >/dev/null 2>&1 || return 0
