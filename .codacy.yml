@@ -14,3 +14,6 @@ exclude_paths:
   # Generated or vendored content, none of it written here.
   - "**/testdata/**"
   - "deployment/**"
+  # The website's page-assembly script and its test run in CI to build the
+  # Pages deployment; neither ships in the site bundle, like the packaging above.
+  - "website/scripts/**"
