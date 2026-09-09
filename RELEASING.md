@@ -96,6 +96,14 @@ wingetcreate submit --token <github-token> <manifest 資料夾>
 - zip 走 `zip` + `portable` nested installer，指向 zip 內的 `taiga.exe`。
 - 送出後 PR 需等 winget-pkgs moderator 核准（會有 msftbot 留言說明），不代表失敗。
 
+## Scoop
+
+Scoop bucket 在 [`KoukeNeko/scoop-bucket`](https://github.com/KoukeNeko/scoop-bucket)，manifest 為 `bucket/taiga.json`。
+
+- manifest 已內建 `checkver`（追 GitHub releases）與 `autoupdate`（依 `v$version` 組 URL、雜湊取自 release 的 `SHA256SUMS`），改版時可用 Scoop 的更新工具（`checkver`/Excavator）自動 bump，或手動更新 `version` 與兩個平台的 `hash`。
+- 只追**正式版**；zip 是巢狀結構，靠 `extract_dir: taiga_<version>_windows_<arch>` 攤平後 `bin: taiga.exe` 上 PATH。
+- 使用者：`scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket` 後 `scoop install taiga`。
+
 ## 發布後驗證
 
 ```sh

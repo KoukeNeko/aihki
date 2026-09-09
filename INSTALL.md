@@ -60,6 +60,22 @@ Bash, Zsh, and Fish completions.
 
 To try a pre-release, download the archive manually as described in the next section.
 
+## Scoop (Windows)
+
+```powershell
+scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
+scoop install taiga
+```
+
+Upgrading:
+
+```powershell
+scoop update taiga
+```
+
+The manifest tracks the GitHub releases and auto-updates to new stable versions. Scoop verifies each
+download against the release checksums and shims `taiga` onto your PATH.
+
 ## Official release archives
 
 Download the archive for your platform from the GitHub Release, together with `SHA256SUMS` from the
@@ -155,6 +171,12 @@ Homebrew:
 
 ```sh
 brew uninstall taiga
+```
+
+Scoop:
+
+```powershell
+scoop uninstall taiga
 ```
 
 Everything else:

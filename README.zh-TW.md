@@ -119,6 +119,13 @@ taiga project use example-project --local
    brew install koukeneko/tap/taiga
    ```
 
+   Windows 用 [Scoop](https://scoop.sh)：
+
+   ```powershell
+   scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
+   scoop install taiga
+   ```
+
    或用安裝腳本，它會先核對 release checksum 才安裝：
 
    ```sh

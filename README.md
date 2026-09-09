@@ -134,6 +134,13 @@ or credentials — created locally and never uploaded.
    brew install koukeneko/tap/taiga
    ```
 
+   [Scoop](https://scoop.sh), on Windows:
+
+   ```powershell
+   scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
+   scoop install taiga
+   ```
+
    Or the install script, which verifies the download against the release checksums before it
    installs anything:
 

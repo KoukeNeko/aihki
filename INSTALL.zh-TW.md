@@ -55,6 +55,22 @@ Tap 只追蹤**正式版**，不會安裝 pre-release。Formula 安裝的是 rel
 
 要試用 pre-release 請依下一節手動下載 archive。
 
+## Scoop（Windows）
+
+```powershell
+scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket
+scoop install taiga
+```
+
+升級：
+
+```powershell
+scoop update taiga
+```
+
+Manifest 追蹤 GitHub releases 並自動更新到新的正式版。Scoop 會用 release checksum 核對每次下載，並把
+`taiga` 加進 PATH。
+
 ## 官方 release archive
 
 從 GitHub Release 下載符合平台的 archive，以及同一版本的 `SHA256SUMS`：
@@ -141,6 +157,12 @@ Homebrew：
 
 ```sh
 brew uninstall taiga
+```
+
+Scoop：
+
+```powershell
+scoop uninstall taiga
 ```
 
 其他方式：
