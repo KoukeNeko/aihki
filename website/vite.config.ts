@@ -2,6 +2,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { defineConfig } from 'vite'
 import { readFileSync } from 'node:fs'
 
+// eslint-disable-next-line security/detect-non-literal-fs-filename -- build-time read of a fixed repo file resolved from import.meta.url, never user input
 const compatibility = readFileSync(
   new URL('../COMPATIBILITY.md', import.meta.url),
   'utf8',
