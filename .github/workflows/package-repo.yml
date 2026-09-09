@@ -64,16 +64,20 @@ jobs:
       - name: Build the repositories
         run: |
           POOL="$PWD/pool" OUT="$PWD/site" GPG_KEY_ID="$GPG_KEY_ID" ./scripts/build-package-repo.sh
-          # A tiny landing page so the Pages root is not a 404.
-          cat > site/index.html <<'HTML'
-          <!doctype html><meta charset="utf-8"><title>Taiga CLI package repositories</title>
-          <h1>Taiga CLI package repositories</h1>
-          <p>APT and DNF repositories for <a href="https://github.com/KoukeNeko/taiga-cli">Taiga CLI</a>.
-          Setup instructions are in
-          <a href="https://github.com/KoukeNeko/taiga-cli/blob/main/INSTALL.md">INSTALL.md</a>.</p>
-          <ul><li><a href="taiga-cli.gpg.key">Signing key</a></li>
-          <li><code>deb/</code> — APT</li><li><code>rpm/</code> — DNF</li></ul>
-          HTML
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - name: Build and check the product website
+        working-directory: website
+        run: |
+          npm ci
+          npm run check
+          npm test
+          npm run build
+      - name: Assemble product page and package repositories
+        run: node website/scripts/assemble-pages.mjs website/dist site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

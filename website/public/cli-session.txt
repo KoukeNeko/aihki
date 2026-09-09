@@ -1,0 +1,36 @@
+Taiga CLI recorded session
+==========================
+
+Recorded with the installed /opt/homebrew/bin/taiga binary against a disposable,
+local Taiga 6.10.2 environment. The temporary username was replaced with <user>.
+The authentication token was never printed. Timing is environment-dependent.
+
+$ taiga version
+taiga v0.6.0
+commit: e5f23f3aa214528a8f8f7aacfa006e7de241dcf6
+built: 2026-09-09T12:19:12Z
+go: go1.26.7
+platform: darwin/arm64
+
+$ taiga doctor --url http://localhost:19000/taiga/
+frontend         ok       http://localhost:19000/taiga/
+api              ok       http://localhost:19000/taiga/api/v1/ (79ms)
+authentication   ok       <user>
+project          ok       taiga-cli-demo
+
+$ taiga issue create --subject "Fix token refresh" --type Bug
+Created issue taiga-cli-demo#1: Fix token refresh (version 1)
+
+$ taiga issue create --subject "Add keyboard shortcuts" --type Enhancement
+Created issue taiga-cli-demo#2: Add keyboard shortcuts (version 1)
+
+$ taiga issue list
+REF  SUBJECT                 STATUS  ASSIGNEE  VERSION
+#2   Add keyboard shortcuts  New               1
+#1   Fix token refresh       New               1
+
+$ taiga issue view 1 --json --fields ref,subject,status,type,version
+{"data":{"ref":1,"status":"New","subject":"Fix token refresh","type":"","version":1},"meta":{"contract":1}}
+
+$ taiga schema issue view --json
+{"data":{"command":"issue view","description":"View an issue","safety":"read","idempotency":"idempotent","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"ref":{"type":"string"}},"required":["ref"],"type":"object"},"output_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"data":{"additionalProperties":false,"properties":{"assignee":{"type":"string"},"created_date":{"type":"string"},"description":{"type":"string"},"id":{"type":"integer"},"is_closed":{"type":"boolean"},"is_watcher":{"type":"boolean"},"modified_date":{"type":"string"},"priority":{"type":"string"},"project":{"type":"string"},"ref":{"type":"integer"},"severity":{"type":"string"},"status":{"type":"string"},"subject":{"type":"string"},"type":{"type":"string"},"version":{"type":"integer"}},"required":["id","is_closed","is_watcher","priority","project","ref","severity","status","subject","type","version"],"type":"object"},"meta":{"type":"object"}},"required":["data","meta"],"type":"object"}},"meta":{"contract":1}}
