@@ -27,3 +27,17 @@ printf '\n---\n\n'
 printf '<details>\n<summary><b>繁體中文</b></summary>\n\n'
 printf '%s\n' "$chinese"
 printf '\n</details>\n'
+
+# A short install/update block so anyone landing on the release can get it
+# without hunting; the full matrix lives in INSTALL.md.
+cat <<'NOTES'
+
+---
+
+## Install / Update
+
+- **Homebrew** (macOS/Linux): `brew install koukeneko/tap/taiga` · update with `brew upgrade taiga`
+- **Scoop** (Windows): `scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket && scoop install taiga`
+- **APT / DNF repositories** (auto-updating) and **`.deb` / `.rpm`**: see [INSTALL.md](https://github.com/KoukeNeko/taiga-cli/blob/main/INSTALL.md)
+- Or download an asset below and verify it against `SHA256SUMS`.
+NOTES
