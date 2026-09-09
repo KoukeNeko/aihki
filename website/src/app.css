@@ -434,6 +434,8 @@ h2 {
   gap: 22px;
 }
 .feature-card {
+  display: flex;
+  flex-direction: column;
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -486,6 +488,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-top: auto;
 }
 .tags span {
   font-size: 9px;
@@ -801,6 +804,16 @@ h3 {
 .install-content {
   padding: 24px;
 }
+.install-panels {
+  display: grid;
+}
+.install-panel {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+.install-panel.active {
+  visibility: visible;
+}
 .install-label {
   display: flex;
   justify-content: space-between;
@@ -824,7 +837,7 @@ h3 {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.install-content > p {
+.install-panel p {
   color: #7d8d83;
   font-size: 10px;
   line-height: 1.7;
@@ -958,6 +971,57 @@ footer > div:last-child {
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
+}
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 6px 18px #163c4c1f;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    visibility 0.2s;
+}
+.to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.to-top:hover {
+  color: var(--teal);
+  border-color: var(--teal);
+}
+.to-top svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.to-top:focus-visible {
+  outline: 3px solid #687ad8;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .to-top {
+    right: 16px;
+    bottom: 16px;
+  }
 }
 @media (min-width: 1500px) {
   .hero {
@@ -1296,7 +1360,7 @@ header {
   background: light-dark(#fafcfb, #19323a);
 }
 .install-tabs button,
-.install-content > p,
+.install-panel p,
 .install-label,
 .next-step code,
 .platform-note,

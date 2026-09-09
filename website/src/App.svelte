@@ -25,6 +25,11 @@
       localStorage.setItem('taiga-website-theme', theme)
     } catch {}
   }
+  let pageY = $state(0)
+  const showToTop = $derived(pageY > 500)
+  function toTop() {
+    window.scrollTo(0, 0)
+  }
   const repo = 'https://github.com/KoukeNeko/taiga-cli'
   const verifiedServers = __VERIFIED_SERVERS__
   let audience = $state(0)
@@ -118,6 +123,8 @@
     content="An independent command-line client for Taiga. Manage your agile workflow and automate with stable JSON contracts, safe writes, and native binaries."
   /></svelte:head
 >
+
+<svelte:window onscroll={() => (pageY = window.scrollY)} />
 
 <a class="skip" href="#main">Skip to content</a>
 <header>
@@ -398,14 +405,24 @@
             >{/each}
         </div>
         <div class="install-content">
-          <div class="install-label">
-            <span>{installs[platform].manager}</span><button
-              onclick={() => copy(installs[platform].command, 'install')}
-              >{copied === 'install' ? 'Copied ✓' : 'Copy ⧉'}</button
-            >
+          <div class="install-panels">
+            {#each installs as install, i}
+              <div
+                class="install-panel"
+                class:active={platform === i}
+                aria-hidden={platform !== i}
+              >
+                <div class="install-label">
+                  <span>{install.manager}</span><button
+                    onclick={() => copy(install.command, 'install')}
+                    >{copied === 'install' ? 'Copied ✓' : 'Copy ⧉'}</button
+                  >
+                </div>
+                <pre>{install.command}</pre>
+                <p>{install.note}</p>
+              </div>
+            {/each}
           </div>
-          <pre>{installs[platform].command}</pre>
-          <p>{installs[platform].note}</p>
           <div class="next-step">
             <span>02</span>
             <div>
@@ -479,3 +496,16 @@
       ? 'Command copied to clipboard.'
       : ''}
 </div>
+
+<button
+  class="to-top"
+  class:visible={showToTop}
+  type="button"
+  aria-label="Back to top"
+  title="Back to top"
+  onclick={toTop}
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true"
+    ><path d="M12 19V5M5 12l7-7 7 7" /></svg
+  >
+</button>
