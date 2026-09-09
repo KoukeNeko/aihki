@@ -71,6 +71,21 @@ scoop update taiga
 Manifest 追蹤 GitHub releases 並自動更新到新的正式版。Scoop 會用 release checksum 核對每次下載，並把
 `taiga` 加進 PATH。
 
+## Linux 套件（.deb 與 .rpm）
+
+每個 release 都附上 x86-64 與 ARM64 的 `.deb` 與 `.rpm`，與 archive 使用相同的 binary 建置。
+
+```sh
+# Debian / Ubuntu
+sudo dpkg -i ./taiga-cli_*.deb
+
+# Fedora / RHEL
+sudo rpm -i ./taiga-cli-*.rpm
+```
+
+發行版套件名稱為 **`taiga-cli`**，安裝後的指令仍是 `taiga`。它會把 binary 裝到 `/usr/bin/taiga`，並附上
+Bash、Zsh、Fish completion。
+
 ## 官方 release archive
 
 從 GitHub Release 下載符合平台的 archive，以及同一版本的 `SHA256SUMS`：

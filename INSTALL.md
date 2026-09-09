@@ -76,6 +76,22 @@ scoop update taiga
 The manifest tracks the GitHub releases and auto-updates to new stable versions. Scoop verifies each
 download against the release checksums and shims `taiga` onto your PATH.
 
+## Linux packages (.deb and .rpm)
+
+Every release attaches `.deb` and `.rpm` packages for x86-64 and ARM64, built from the same binaries
+as the archives.
+
+```sh
+# Debian / Ubuntu
+sudo dpkg -i ./taiga-cli_*.deb
+
+# Fedora / RHEL
+sudo rpm -i ./taiga-cli-*.rpm
+```
+
+The distribution package is named **`taiga-cli`**; the installed command is still `taiga`. It
+installs the binary at `/usr/bin/taiga` along with Bash, Zsh, and Fish completions.
+
 ## Official release archives
 
 Download the archive for your platform from the GitHub Release, together with `SHA256SUMS` from the
