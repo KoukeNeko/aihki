@@ -1,5 +1,32 @@
 <script lang="ts">
+  import { onMount } from 'svelte'
+  let theme = $state('system')
+  const themeOrder = ['system', 'light', 'dark'] as const
+  const themeName = $derived(
+    theme === 'dark' ? 'Dark' : theme === 'light' ? 'Light' : 'System',
+  )
+  const nextTheme = $derived(
+    themeOrder[
+      (themeOrder.indexOf(theme as (typeof themeOrder)[number]) + 1) %
+        themeOrder.length
+    ],
+  )
+  onMount(() => {
+    try {
+      theme = localStorage.getItem('taiga-website-theme') || 'system'
+    } catch {}
+    if (!['system', 'light', 'dark'].includes(theme)) theme = 'system'
+    document.documentElement.dataset.theme = theme
+  })
+  function cycleTheme() {
+    theme = nextTheme
+    document.documentElement.dataset.theme = theme
+    try {
+      localStorage.setItem('taiga-website-theme', theme)
+    } catch {}
+  }
   const repo = 'https://github.com/KoukeNeko/taiga-cli'
+  const verifiedServers = __VERIFIED_SERVERS__
   let audience = $state(0)
   let platform = $state(0)
   let copied = $state('')
@@ -98,12 +125,6 @@
     <a class="brand" href="#main" aria-label="Taiga CLI home"
       ><span class="brand-mark">✳</span> Taiga <span>CLI</span></a
     >
-    <button
-      class="menu-button"
-      aria-expanded={menu}
-      aria-controls="navigation"
-      onclick={() => (menu = !menu)}>{menu ? 'Close ✕' : 'Menu ☰'}</button
-    >
     <nav id="navigation" class:open={menu} aria-label="Main navigation">
       <a href="#features" onclick={() => (menu = false)}>Features</a><a
         href="#examples"
@@ -114,6 +135,40 @@
         >Get started <span>→</span></a
       >
     </nav>
+    <button
+      class="menu-button"
+      aria-expanded={menu}
+      aria-controls="navigation"
+      onclick={() => (menu = !menu)}>{menu ? 'Close ✕' : 'Menu ☰'}</button
+    >
+    <button
+      class="theme-control"
+      type="button"
+      aria-label={`${themeName} color theme. Switch to ${nextTheme}.`}
+      title={`${themeName} theme · switch to ${nextTheme}`}
+      onclick={cycleTheme}
+    >
+      {#if theme === 'light'}
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><circle cx="12" cy="12" r="3.5" /><path
+            d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"
+          /></svg
+        >
+      {:else if theme === 'dark'}
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path
+            d="M20 15.3A8.5 8.5 0 0 1 8.7 4a8.5 8.5 0 1 0 11.3 11.3Z"
+          /></svg
+        >
+      {:else}
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><circle cx="12" cy="12" r="8" /><path
+            class="theme-fill"
+            d="M12 4a8 8 0 0 1 0 16Z"
+          /></svg
+        >
+      {/if}
+    </button>
   </div>
 </header>
 <main id="main">
@@ -383,8 +438,10 @@
     ><a href={`${repo}/issues`}>Report an issue <span>↗</span></a>
   </section>
   <div class="wrap engineering">
-    <span>Built with Go</span><span>MIT licensed</span><span
-      >Taiga 6.10.2 verified</span
+    <span>Built with Go</span><a href={`${repo}/blob/main/LICENSE`}
+      >MIT licensed</a
+    ><a href={`${repo}/blob/main/COMPATIBILITY.md`}
+      >Tested against {verifiedServers}</a
     ><a href={`${repo}/blob/main/README.md#diagnosable-when-something-breaks`}
       >Diagnostics with taiga doctor ↗</a
     >
@@ -395,7 +452,7 @@
     <a class="brand" href="#main"
       ><span class="brand-mark">✳</span> Taiga <span>CLI</span></a
     >
-    <p>An independent client. Not affiliated with the Taiga project.</p>
+    <p>An independent, third-party client for Taiga.</p>
   </div>
   <div>
     <a href={repo}>GitHub ↗</a><a href={`${repo}/blob/main/CHANGELOG.md`}
@@ -403,6 +460,18 @@
     ><a href={`${repo}/blob/main/LICENSE`}>MIT License</a>
   </div>
 </footer>
+<aside
+  class="wrap trademark-notice"
+  aria-label="Trademark and independence notice"
+>
+  <h2>Independent project &amp; trademarks</h2>
+  <p>
+    Taiga is a trademark of its respective owners. Taiga CLI is an independent
+    project and is not affiliated with, endorsed by, or sponsored by the Taiga
+    project or its maintainers. The name is used solely to identify the software
+    this client works with.
+  </p>
+</aside>
 <div class="sr-only" role="status" aria-live="polite">
   {copied === 'failed'
     ? 'Copy unavailable. Please select and copy the command manually.'

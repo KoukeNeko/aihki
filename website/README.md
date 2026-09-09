@@ -6,6 +6,8 @@ The interactive terminal examples now use output captured from the installed Tai
 
 ## Local development
 
+The footer's tested Taiga server versions are read from `Verified` rows in the root `COMPATIBILITY.md` at build time. Update that document after verification, then rebuild and deploy Pages to update the website. This is not a live latest-version lookup. Recorded session versions remain historical. The Go and MIT labels describe implementation and licensing, rather than release versions.
+
 ```sh
 cd website
 npm ci

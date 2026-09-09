@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Manrope:wght@400;500;600;650;700;750;800&display=swap');
 :root {
+  color-scheme: light;
   font-family: 'DM Sans', sans-serif;
   color: #1b3344;
   background: #fff;
@@ -9,6 +10,66 @@
   --teal: #078b83;
   --muted: #62747d;
   --line: #dfe9e9;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+  }
+}
+:root {
+  --teal: light-dark(#078b83, #6cdbc2);
+  --muted: light-dark(#62747d, #b0c2c8);
+  --line: light-dark(#dfe9e9, #344b56);
+  --surface: light-dark(#fff, #172c36);
+  --ink: light-dark(#1b3344, #e4efef);
+  color: var(--ink);
+  background: light-dark(#fff, #10212a);
+}
+.theme-control {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  margin-left: 18px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  background: var(--surface);
+  cursor: pointer;
+}
+.theme-control:hover {
+  color: var(--teal);
+  border-color: var(--teal);
+}
+.theme-control svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.theme-control .theme-fill {
+  fill: currentColor;
+  stroke: none;
+}
+.theme-control:focus-visible {
+  outline: 3px solid #687ad8;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .theme-control {
+    margin-left: 10px;
+  }
+  .menu-button {
+    margin-left: auto;
+  }
 }
 * {
   box-sizing: border-box;
@@ -94,6 +155,7 @@ header {
 }
 nav {
   display: flex;
+  margin-left: auto;
   gap: 32px;
   align-items: center;
   font-size: 13px;
@@ -834,6 +896,26 @@ h3 {
   color: #84978d;
   font-size: 10px;
 }
+.engineering > * + *::before {
+  content: '·';
+  margin-right: 16px;
+  color: #6b8075;
+}
+.trademark-notice {
+  border-top: 1px solid var(--line);
+  padding-block: 24px 32px;
+}
+.trademark-notice h2 {
+  font-size: 13px;
+  letter-spacing: 0;
+}
+.trademark-notice p {
+  max-width: 850px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 0;
+}
 footer {
   display: flex;
   align-items: center;
@@ -1151,6 +1233,122 @@ footer > div:last-child {
   }
   .section-description {
     font-size: 13px;
+  }
+}
+/* Theme surfaces keep the original paper palette in light mode. */
+header {
+  background: light-dark(#ffffffed, #10212af2);
+  border-color: var(--line);
+}
+.grid-paper {
+  background-color: light-dark(#fcfefe, #10252e);
+}
+.demo-section {
+  background: light-dark(#f5f9f8, #142a32);
+  border-color: var(--line);
+}
+.feature-card,
+.feature-card.blue,
+.feature-card.purple {
+  background: linear-gradient(
+    135deg,
+    light-dark(#f4fbf8, #203c40),
+    var(--surface) 70%
+  );
+}
+.feature-card.blue {
+  background: linear-gradient(
+    135deg,
+    light-dark(#f2f7fd, #203449),
+    var(--surface) 70%
+  );
+}
+.feature-card.purple {
+  background: linear-gradient(
+    135deg,
+    light-dark(#f7f5fd, #342e46),
+    var(--surface) 70%
+  );
+}
+.quick-install,
+.floating-note,
+.install-card,
+.paper-stamp,
+.menu-button,
+.skip {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.pill {
+  background: light-dark(#eef9f5, #1a3e39);
+  border-color: var(--line);
+}
+.tags span {
+  background: var(--surface);
+  color: var(--muted);
+  border-color: var(--line);
+}
+.install-tabs {
+  background: light-dark(#fafcfb, #19323a);
+}
+.install-tabs button,
+.install-content > p,
+.install-label,
+.next-step code,
+.platform-note,
+.trust-strip > span,
+.trust-strip > div,
+.workflow-line,
+.workflow-line p,
+.demo-caption,
+.example-note,
+.engineering,
+footer p,
+footer > div:last-child,
+.floating-note small {
+  color: var(--muted);
+}
+.install-content pre,
+.next-step > span {
+  background: light-dark(#f4f8f6, #10272c);
+  border-color: var(--line);
+  color: light-dark(#306c59, #a6e2ce);
+}
+.next-step {
+  border-color: var(--line);
+}
+.audiences button {
+  border-color: var(--line);
+  color: var(--muted);
+}
+.audiences button.active {
+  background: var(--surface);
+  color: var(--teal);
+  border-color: var(--teal);
+}
+.button {
+  background: light-dark(#078b83, #207b70);
+  border-color: light-dark(#078b83, #449f90);
+  color: #fff;
+}
+.safety-grid code,
+.install-label button {
+  color: var(--teal);
+}
+.hero-art img {
+  border-color: var(--line);
+  box-shadow: 0 16px 40px #0002;
+}
+.terminal {
+  box-shadow: 8px 10px 0 light-dark(#dbe6e2, #29424a);
+}
+.install-card {
+  box-shadow: 5px 6px 0 light-dark(#e5eee9, #29424a);
+}
+@media (max-width: 760px) {
+  nav {
+    background: var(--surface);
   }
 }
 @media (prefers-reduced-motion: reduce) {
