@@ -104,6 +104,16 @@ Scoop bucket 在 [`KoukeNeko/scoop-bucket`](https://github.com/KoukeNeko/scoop-b
 - 只追**正式版**；zip 是巢狀結構，靠 `extract_dir: taiga_<version>_windows_<arch>` 攤平後 `bin: taiga.exe` 上 PATH。
 - 使用者：`scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket` 後 `scoop install taiga`。
 
+## APT/DNF 倉庫
+
+**Package repo** workflow（`.github/workflows/package-repo.yml`）在 Release 成功後自動重建簽章的 APT/DNF 倉庫並部署到 GitHub Pages（`https://koukeneko.github.io/taiga-cli/`），讓使用者能 `apt`/`dnf` 安裝並自動升級。
+
+- 依賴 repo secret `APT_GPG_PRIVATE_KEY`（armored、無 passphrase 的 GPG 私鑰）與 Pages 設為 **GitHub Actions** 部署。
+- 每次重建會抓**所有正式版**的 .deb/.rpm 重建整個倉庫；pre-release 不納入。
+- 建置腳本 `scripts/build-package-repo.sh` 產 APT（suite `stable`、component `main`、amd64+arm64）與 DNF metadata，並簽章 Release、repomd 與每個 .rpm；公鑰輸出為 `taiga-cli.gpg.key`。
+- 不隨 release 時要重建（換金鑰、修 metadata），到 Actions 手動跑 **Package repo**。
+- 金鑰輪替：產新金鑰、更新 `APT_GPG_PRIVATE_KEY`、手動重跑；使用者下次 `apt`/`dnf` 更新時取得新公鑰。
+
 ## 發布後驗證
 
 ```sh
