@@ -79,18 +79,24 @@ download against the release checksums and shims `taiga` onto your PATH.
 ## Linux packages (.deb and .rpm)
 
 Every release attaches `.deb` and `.rpm` packages for x86-64 and ARM64, built from the same binaries
-as the archives.
+as the archives. Download the file for your architecture from the
+[latest release](https://github.com/KoukeNeko/taiga-cli/releases/latest), then install it from the
+directory you downloaded it into.
 
 ```sh
 # Debian / Ubuntu
-sudo dpkg -i ./taiga-cli_*.deb
+sudo apt install ./taiga-cli_*.deb
 
 # Fedora / RHEL
-sudo rpm -i ./taiga-cli-*.rpm
+sudo dnf install ./taiga-cli-*.rpm
 ```
 
-The distribution package is named **`taiga-cli`**; the installed command is still `taiga`. It
-installs the binary at `/usr/bin/taiga` along with Bash, Zsh, and Fish completions.
+`apt install ./…` and `dnf install ./…` are preferred over `dpkg -i` / `rpm -i` because they resolve
+dependencies (this static binary has none, but the habit is safer). The package is named
+**`taiga-cli`**; the installed command is `taiga`, at `/usr/bin/taiga`, with Bash, Zsh, and Fish
+completions.
+
+To upgrade, download and install the newer file when a release is out.
 
 ## Official release archives
 

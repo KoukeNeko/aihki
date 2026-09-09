@@ -73,18 +73,23 @@ Manifest 追蹤 GitHub releases 並自動更新到新的正式版。Scoop 會用
 
 ## Linux 套件（.deb 與 .rpm）
 
-每個 release 都附上 x86-64 與 ARM64 的 `.deb` 與 `.rpm`，與 archive 使用相同的 binary 建置。
+每個 release 都附上 x86-64 與 ARM64 的 `.deb` 與 `.rpm`，與 archive 使用相同的 binary 建置。到
+[最新 release](https://github.com/KoukeNeko/taiga-cli/releases/latest) 下載你架構對應的檔案，然後在下載目錄裡
+安裝。
 
 ```sh
 # Debian / Ubuntu
-sudo dpkg -i ./taiga-cli_*.deb
+sudo apt install ./taiga-cli_*.deb
 
 # Fedora / RHEL
-sudo rpm -i ./taiga-cli-*.rpm
+sudo dnf install ./taiga-cli-*.rpm
 ```
 
-發行版套件名稱為 **`taiga-cli`**，安裝後的指令仍是 `taiga`。它會把 binary 裝到 `/usr/bin/taiga`，並附上
-Bash、Zsh、Fish completion。
+`apt install ./…` 與 `dnf install ./…` 比 `dpkg -i` / `rpm -i` 好，因為會處理相依（這支靜態 binary 其實沒有
+相依，但這習慣較安全）。套件名稱為 **`taiga-cli`**，指令為 `taiga`，裝在 `/usr/bin/taiga`，並附上 Bash、Zsh、
+Fish completion。
+
+有新版時，下載新檔重裝即可升級。
 
 ## 官方 release archive
 
