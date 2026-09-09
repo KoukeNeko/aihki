@@ -116,6 +116,25 @@ jobs:
             sleep 30
           done
           rm -rf "$linux_dir" "$darwin_dir"
+      - name: Build Linux packages
+        # .deb and .rpm are generated with nfpm (pure Go, no native tooling) from
+        # the same binaries the archives ship, then dropped into the release
+        # directory so the publish step uploads them alongside everything else.
+        run: |
+          brew install nfpm
+          version="${GITHUB_REF_NAME#v}"
+          dist="dist/$GITHUB_REF_NAME"
+          for arch in amd64 arm64; do
+            work="$RUNNER_TEMP/nfpm-$arch"
+            rm -rf "$work"; mkdir -p "$work"
+            tar -xzf "$dist/taiga_${version}_linux_${arch}.tar.gz" -C "$work" --strip-components=1
+            for pkg in deb rpm; do
+              ( cd "$work" && NFPM_VERSION="$version" NFPM_ARCH="$arch" \
+                  nfpm pkg --packager "$pkg" --config "$GITHUB_WORKSPACE/packaging/nfpm.yaml" \
+                    --target "$GITHUB_WORKSPACE/$dist/" )
+            done
+          done
+          ls -1 "$dist"/*.deb "$dist"/*.rpm
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
