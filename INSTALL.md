@@ -79,9 +79,45 @@ download against the release checksums and shims `taiga` onto your PATH.
 ## Linux packages (.deb and .rpm)
 
 Every release attaches `.deb` and `.rpm` packages for x86-64 and ARM64, built from the same binaries
-as the archives. Download the file for your architecture from the
+as the archives. Install them from the signed APT/DNF repository — which keeps `taiga` current
+through `apt upgrade` / `dnf upgrade` — or download a single file directly. The package is named
+**`taiga-cli`**; the installed command is `taiga`, at `/usr/bin/taiga`, with Bash, Zsh, and Fish
+completions.
+
+### Repository (auto-updates)
+
+Debian / Ubuntu:
+
+```sh
+sudo install -d /etc/apt/keyrings
+sudo curl -fsSL https://koukeneko.github.io/taiga-cli/taiga-cli.gpg.key -o /etc/apt/keyrings/taiga-cli.gpg.key
+echo "deb [signed-by=/etc/apt/keyrings/taiga-cli.gpg.key] https://koukeneko.github.io/taiga-cli/deb stable main" | sudo tee /etc/apt/sources.list.d/taiga-cli.list
+sudo apt update && sudo apt install taiga-cli
+```
+
+Fedora / RHEL:
+
+```sh
+sudo tee /etc/yum.repos.d/taiga-cli.repo >/dev/null <<'EOF'
+[taiga-cli]
+name=Taiga CLI
+baseurl=https://koukeneko.github.io/taiga-cli/rpm
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://koukeneko.github.io/taiga-cli/taiga-cli.gpg.key
+EOF
+sudo dnf install taiga-cli
+```
+
+The repository metadata and every package are GPG-signed. New releases arrive through the usual
+`apt upgrade` / `dnf upgrade`.
+
+### Direct download
+
+Download the file for your architecture from the
 [latest release](https://github.com/KoukeNeko/taiga-cli/releases/latest), then install it from the
-directory you downloaded it into.
+directory you downloaded it into:
 
 ```sh
 # Debian / Ubuntu
@@ -91,12 +127,7 @@ sudo apt install ./taiga-cli_*.deb
 sudo dnf install ./taiga-cli-*.rpm
 ```
 
-`apt install ./…` and `dnf install ./…` are preferred over `dpkg -i` / `rpm -i` because they resolve
-dependencies (this static binary has none, but the habit is safer). The package is named
-**`taiga-cli`**; the installed command is `taiga`, at `/usr/bin/taiga`, with Bash, Zsh, and Fish
-completions.
-
-To upgrade, download and install the newer file when a release is out.
+A direct install does not auto-update; download and install the newer file when a release is out.
 
 ## Official release archives
 

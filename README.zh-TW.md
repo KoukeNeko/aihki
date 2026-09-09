@@ -126,7 +126,7 @@ taiga project use example-project --local
    scoop install taiga
    ```
 
-   Debian/Ubuntu 或 Fedora/RHEL 的話，每個 release 也附有 `.deb` 與 `.rpm`；見
+   Debian/Ubuntu 或 Fedora/RHEL 可加簽章的 APT/DNF 倉庫自動升級，或直接下載 `.deb` / `.rpm`——見
    [INSTALL.zh-TW.md](INSTALL.zh-TW.md#linux-套件deb-與-rpm)。
 
    或用安裝腳本，它會先核對 release checksum 才安裝：

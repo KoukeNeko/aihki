@@ -141,8 +141,8 @@ or credentials — created locally and never uploaded.
    scoop install taiga
    ```
 
-   On Debian/Ubuntu or Fedora/RHEL, each release also carries `.deb` and `.rpm` packages; see
-   [INSTALL.md](INSTALL.md#linux-packages-deb-and-rpm).
+   On Debian/Ubuntu or Fedora/RHEL, add the signed APT/DNF repository for auto-updating installs, or
+   grab a `.deb` / `.rpm` directly — see [INSTALL.md](INSTALL.md#linux-packages-deb-and-rpm).
 
    Or the install script, which verifies the download against the release checksums before it
    installs anything:

@@ -73,9 +73,42 @@ Manifest 追蹤 GitHub releases 並自動更新到新的正式版。Scoop 會用
 
 ## Linux 套件（.deb 與 .rpm）
 
-每個 release 都附上 x86-64 與 ARM64 的 `.deb` 與 `.rpm`，與 archive 使用相同的 binary 建置。到
-[最新 release](https://github.com/KoukeNeko/taiga-cli/releases/latest) 下載你架構對應的檔案，然後在下載目錄裡
-安裝。
+每個 release 都附上 x86-64 與 ARM64 的 `.deb` 與 `.rpm`，與 archive 使用相同的 binary 建置。可從簽章的
+APT/DNF 倉庫安裝（`apt upgrade` / `dnf upgrade` 會自動更新），或直接下載單一檔案。套件名稱為 **`taiga-cli`**，
+指令為 `taiga`，裝在 `/usr/bin/taiga`，並附上 Bash、Zsh、Fish completion。
+
+### 倉庫（自動升級）
+
+Debian / Ubuntu：
+
+```sh
+sudo install -d /etc/apt/keyrings
+sudo curl -fsSL https://koukeneko.github.io/taiga-cli/taiga-cli.gpg.key -o /etc/apt/keyrings/taiga-cli.gpg.key
+echo "deb [signed-by=/etc/apt/keyrings/taiga-cli.gpg.key] https://koukeneko.github.io/taiga-cli/deb stable main" | sudo tee /etc/apt/sources.list.d/taiga-cli.list
+sudo apt update && sudo apt install taiga-cli
+```
+
+Fedora / RHEL：
+
+```sh
+sudo tee /etc/yum.repos.d/taiga-cli.repo >/dev/null <<'EOF'
+[taiga-cli]
+name=Taiga CLI
+baseurl=https://koukeneko.github.io/taiga-cli/rpm
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://koukeneko.github.io/taiga-cli/taiga-cli.gpg.key
+EOF
+sudo dnf install taiga-cli
+```
+
+倉庫 metadata 與每個套件都經 GPG 簽章。新版透過一般的 `apt upgrade` / `dnf upgrade` 取得。
+
+### 直接下載
+
+到 [最新 release](https://github.com/KoukeNeko/taiga-cli/releases/latest) 下載你架構對應的檔案，再於下載目錄
+安裝：
 
 ```sh
 # Debian / Ubuntu
@@ -85,11 +118,7 @@ sudo apt install ./taiga-cli_*.deb
 sudo dnf install ./taiga-cli-*.rpm
 ```
 
-`apt install ./…` 與 `dnf install ./…` 比 `dpkg -i` / `rpm -i` 好，因為會處理相依（這支靜態 binary 其實沒有
-相依，但這習慣較安全）。套件名稱為 **`taiga-cli`**，指令為 `taiga`，裝在 `/usr/bin/taiga`，並附上 Bash、Zsh、
-Fish completion。
-
-有新版時，下載新檔重裝即可升級。
+直接安裝不會自動升級；有新版時下載新檔重裝即可。
 
 ## 官方 release archive
 
