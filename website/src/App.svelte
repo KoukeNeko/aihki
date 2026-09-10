@@ -84,6 +84,19 @@
       note: 'Prefer your package manager? Signed APT and DNF repositories are available in the installation guide.',
     },
   ]
+  // Open the install tab for the visitor's OS; an unrecognized agent keeps the
+  // macOS default the tabs already lead with. Names must match the entries above.
+  function detectOS(): string {
+    const agent = typeof navigator === 'undefined' ? '' : navigator.userAgent
+    if (/Windows|Win32|Win64/i.test(agent)) return 'Windows'
+    if (/Mac|iPhone|iPad|iPod/i.test(agent)) return 'macOS'
+    if (/Linux|X11|CrOS|Android/i.test(agent)) return 'Linux'
+    return ''
+  }
+  onMount(() => {
+    const detected = installs.findIndex((entry) => entry.name === detectOS())
+    if (detected >= 0) platform = detected
+  })
   const features = [
     {
       icon: '▤',
