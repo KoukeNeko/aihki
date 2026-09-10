@@ -37,7 +37,7 @@ cat <<'NOTES'
 ## Install / Update
 
 - **Homebrew** (macOS/Linux): `brew install koukeneko/tap/taiga` · update with `brew upgrade taiga`
-- **Scoop** (Windows): `scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket && scoop install taiga`
+- **Scoop** (Windows): `scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket && scoop install koukeneko/taiga-cli`
 - **APT / DNF repositories** (auto-updating) and **`.deb` / `.rpm`**: see [INSTALL.md](https://github.com/KoukeNeko/taiga-cli/blob/main/INSTALL.md)
 - Or download an asset below and verify it against `SHA256SUMS`.
 NOTES

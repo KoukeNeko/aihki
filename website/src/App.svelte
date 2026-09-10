@@ -73,7 +73,7 @@
       name: 'Windows',
       manager: 'Scoop',
       command:
-        'scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket\nscoop install taiga',
+        'scoop bucket add koukeneko https://github.com/KoukeNeko/scoop-bucket\nscoop install koukeneko/taiga-cli',
       note: 'Open a new terminal after installation to refresh your PATH.',
     },
     {
