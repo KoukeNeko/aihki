@@ -97,6 +97,7 @@
     const detected = installs.findIndex((entry) => entry.name === detectOS())
     if (detected >= 0) platform = detected
   })
+  const activeInstall = $derived(installs[platform])
   const features = [
     {
       icon: '▤',
@@ -215,14 +216,30 @@
             >Bring Taiga to your terminal <span>→</span></a
           ><a class="text-link" href={repo}>View on GitHub ↗</a>
         </div>
-        <div class="quick-install">
-          <span aria-hidden="true">$</span><code
-            >brew install koukeneko/tap/taiga</code
-          ><button
-            aria-label="Copy Homebrew install command"
-            onclick={() => copy(installs[0].command, 'hero')}
-            >{copied === 'hero' ? '✓' : '⧉'}</button
-          >
+        <div class="quick-install-group">
+          <div class="quick-install-platforms" aria-label="Choose your system">
+            {#each installs as install, i}
+              <button
+                class:active={platform === i}
+                aria-pressed={platform === i}
+                onclick={() => {
+                  platform = i
+                  copied = ''
+                }}>{install.name}</button
+              >
+            {/each}
+          </div>
+          <div class="quick-install">
+            <span aria-hidden="true">$</span><code>{activeInstall.command}</code
+            ><button
+              aria-label={`Copy ${activeInstall.name} install command`}
+              onclick={() => copy(activeInstall.command, 'hero')}
+              >{copied === 'hero' ? '✓' : '⧉'}</button
+            >
+          </div>
+          <p class="quick-install-note">
+            {activeInstall.manager}: {activeInstall.note}
+          </p>
         </div>
         <div class="platform-note">
           macOS <span>·</span> Linux <span>·</span> Windows
